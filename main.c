@@ -10,6 +10,8 @@
 
 #define SERVER_PORT "143"
 #define BUFFER_SIZE 256
+#define LOGIN_CMD "LOGIN"
+#define SELECT_CMD "SELECT"
 
 int main(int argc, char **argv)
 {
@@ -22,6 +24,9 @@ int main(int argc, char **argv)
     char buffer[BUFFER_SIZE];
 
     char *server_name = "unimelb-comp30023-2024.cloud.edu.au";
+    char *username, *password;
+    char *folder_name = "INBOX";
+    char *tag; // need to create a getTag function
 
     memset(&hints, 0, sizeof(hints)); // initialising all the bytes in the hints structure to 0
     hints.ai_family = AF_UNSPEC;      // allowing IPv4 or IPv6
@@ -71,6 +76,41 @@ int main(int argc, char **argv)
     }
 
     freeaddrinfo(servinfo); // free the memory as not needed anymore
+
+    // loggin in to the IMAP server
+    sprintf(buffer, "%s %s %s %s\r\n", tag, LOGIN_CMD, username, password);
+    write(sockfd, buffer, strlen(buffer));
+
+    // do you think it's a good practice resetting the buffer after every action?
+    // memset(buffer, 0, BUFFER_SIZE);
+
+    // receiving response
+    read(sockfd, buffer, BUFFER_SIZE - 1); // -1 to for the null terminator at the end
+    printf("%s\n", buffer);
+
+    // check if login was successful
+    if (strstr(buffer, "OK") == NULL) // is it better to convert response to lower case and compare or compare twice OK & ok?
+    {
+        fprintf(stderr, "Login failure\n");
+        exit(3);
+    }
+
+    // tell the system which folder to read from
+    sprintf(buffer, "%s %s %s\r\n", tag, SELECT_CMD, folder_name);
+    write(sockfd, buffer, strlen(buffer));
+
+    // receive response
+    read(sockfd, buffer, BUFFER_SIZE - 1);
+    printf("%s\n", buffer);
+
+    // Check if folder exists
+    if (strstr(buffer, "OK") == NULL)
+    {
+        fprintf(stderr, "Folder not found\n");
+        exit(3);
+    }
+
+    close(sockfd); // closing the socket at end
 
     return 0;
 }
