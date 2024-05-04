@@ -14,8 +14,11 @@
 int main(int argc, char **argv)
 {
 
-    int socket_fd, status;
+    int sockfd, status;
     struct addrinfo hints, *servinfo, *rp;
+    /*
+    servinfo is a linked list with all kinds of address information
+    */
     char buffer[BUFFER_SIZE];
 
     char *server_name = "unimelb-comp30023-2024.cloud.edu.au";
@@ -26,26 +29,48 @@ int main(int argc, char **argv)
 
     status = getaddrinfo(server_name, SERVER_PORT, &hints, &servinfo);
 
+    /* getaddrinfo() returns a list of address structures.
+              Try each address until we successfully connect(2).
+              If socket(2) (or connect(2)) fails, we (close the socket
+              and) try the next address. */
+
+    if (status != 0)
+    {
+        fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(status));
+        exit(EXIT_FAILURE);
+    }
+
     // creating a socket
     for (rp = servinfo; rp != NULL; rp = rp->ai_next)
     {
-        socket_fd = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol); // ai_protocol is received from the getaddinfo
+        sockfd = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
 
-        if (socket_fd == -1)
+        // ai_protocol is received from the getaddinfo
+        // socket() returns a socket descriptor that can be used in later system calls, or -1 on error.
+
+        if (sockfd == -1)
         {
             perror("socket"); // error occured while creating the socket
             continue;
         }
 
-        if (connect(socket_fd, rp->ai_addr, rp->ai_addrlen) != -1)
+        if (connect(sockfd, rp->ai_addr, rp->ai_addrlen) == -1)
         {
-            close(socket_fd);
+            close(sockfd);
             perror("connect"); // error occured while connecting to the socket
             continue;
         }
 
         break; // Connected successfully
     }
+
+    if (rp == NULL)
+    {
+        fprintf(stderr, "client: failed to connect\n");
+        exit(EXIT_FAILURE);
+    }
+
+    freeaddrinfo(servinfo); // free the memory as not needed anymore
 
     return 0;
 }
