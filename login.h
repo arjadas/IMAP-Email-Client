@@ -15,7 +15,7 @@
 #include <assert.h>
 
 int connect_to_server(char *server_name);
-int login(int sockfd, char *tag, char *username, char *password);
-int select_folder(int sockfd, char *tag, char *folder_name);
+void login(int sockfd, char *tag, char *username, char *password);
+void select_folder(int sockfd, char *tag, char *folder_name);
 
 #endif
