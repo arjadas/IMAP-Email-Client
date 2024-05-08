@@ -84,27 +84,20 @@ void print_inputs(inputs_t *inputs)
 {
     /* function to print out the values of the command line arguments */
     if (inputs->username != NULL)
-    {
         printf("Username: %s, ", inputs->username);
-    }
+
     if (inputs->password != NULL)
-    {
         printf("Password: %s, ", inputs->password);
-    }
+
     if (inputs->folder != NULL)
-    {
         printf("Folder: %s, ", inputs->folder);
-    }
+
     if (inputs->server_name != NULL)
-    {
         printf("Server: %s, ", inputs->server_name);
-    }
+
     if (inputs->command != NULL)
-    {
         printf("Command: %s, ", inputs->command);
-    }
+
     if ((inputs->message_num) > MESSAGE_NOT_GIVEN)
-    {
         printf("Number of messages: %d\n", inputs->message_num);
-    }
 }
