@@ -35,6 +35,9 @@ int main(int argc, char **argv)
     // select the folder
     select_folder(sockfd, tag, inputs->folder);
 
+    // retrieve the email if command line says retrieve
+    retrieve(sockfd, tag, inputs->message_num, inputs->folder);
+
     close(sockfd); // closing the socket at end
 
     return 0;
