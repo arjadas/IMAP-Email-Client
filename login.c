@@ -80,8 +80,7 @@ void login(int sockfd, char *tag, char *username, char *password)
     // memset(buffer, 0, BUFFER_SIZE);
 
     // receiving response
-    bytes_received = read(sockfd, buffer, BUFFER_SIZE - 1); // -1 to for the null terminator at the end
-    // buffer[bytes_received] = '\0';  // index should be correct
+    bytes_received = read(sockfd, buffer, BUFFER_SIZE); // -1 to for the null terminator at the end
     printf("%s\n", buffer);
 
     // check if login was successful
@@ -107,8 +106,7 @@ void select_folder(int sockfd, char *tag, char *folder_name)
     write(sockfd, buffer, strlen(buffer));
 
     // receive response
-    bytes_received = read(sockfd, buffer, BUFFER_SIZE - 1);
-    // buffer[bytes_received] = '\0';
+    bytes_received = read(sockfd, buffer, BUFFER_SIZE);
     printf("%s\n", buffer);
 
     // Check if folder exists
