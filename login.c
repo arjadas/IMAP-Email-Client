@@ -1,4 +1,5 @@
 #include "login.h"
+#include "helperfunctions.h"
 
 // function to establish a socket and connect to the server
 int connect_to_server(char *server_name)
@@ -65,16 +66,22 @@ int connect_to_server(char *server_name)
 void login(int sockfd, char *tag, char *username, char *password)
 {
     char buffer[BUFFER_SIZE];
+    int bytes_received = 0;
+
+    modify_tag(tag);
+    // printf("%s\n", tag);
 
     // loggin in to the IMAP server
     sprintf(buffer, "%s LOGIN %s %s\r\n", tag, username, password);
+    // printf("%s\n", buffer);
     write(sockfd, buffer, strlen(buffer));
 
     // do you think it's a good practice resetting the buffer after every action?
     // memset(buffer, 0, BUFFER_SIZE);
 
     // receiving response
-    read(sockfd, buffer, BUFFER_SIZE - 1); // -1 to for the null terminator at the end
+    bytes_received = read(sockfd, buffer, BUFFER_SIZE - 1); // -1 to for the null terminator at the end
+    // buffer[bytes_received] = '\0';  // index should be correct
     printf("%s\n", buffer);
 
     // check if login was successful
@@ -89,13 +96,19 @@ void login(int sockfd, char *tag, char *username, char *password)
 void select_folder(int sockfd, char *tag, char *folder_name)
 {
     char buffer[BUFFER_SIZE];
+    int bytes_received = 0;
+
+    modify_tag(tag);
+    // printf("%s\n", tag);
 
     // tell the system which folder to read from
     sprintf(buffer, "%s SELECT %s\r\n", tag, folder_name);
+    // printf("%s\n", buffer);
     write(sockfd, buffer, strlen(buffer));
 
     // receive response
-    read(sockfd, buffer, BUFFER_SIZE - 1);
+    bytes_received = read(sockfd, buffer, BUFFER_SIZE - 1);
+    // buffer[bytes_received] = '\0';
     printf("%s\n", buffer);
 
     // Check if folder exists

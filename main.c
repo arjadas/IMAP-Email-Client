@@ -17,9 +17,7 @@
 int main(int argc, char **argv)
 {
     inputs_t *inputs = process_args(argc, argv);
-    print_inputs(inputs);
-
-    char *tag = "A01"; // need to create a getTag function
+    // print_inputs(inputs);
 
     // establish connection to the server
     int sockfd = connect_to_server(inputs->server_name);
@@ -28,6 +26,8 @@ int main(int argc, char **argv)
         fprintf(stderr, "Failed to connect to server\n");
         exit(EXIT_FAILURE);
     }
+
+    char *tag = generate_tag();
 
     // logging in
     login(sockfd, tag, inputs->username, inputs->password);
@@ -39,6 +39,8 @@ int main(int argc, char **argv)
     retrieve(sockfd, tag, inputs->message_num, inputs->folder);
 
     close(sockfd); // closing the socket at end
+
+    free(tag);
 
     return 0;
 }

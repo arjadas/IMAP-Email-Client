@@ -100,3 +100,23 @@ void print_inputs(inputs_t *inputs)
     if ((inputs->message_num) > MESSAGE_NOT_GIVEN)
         printf("Number of messages: %d\n", inputs->message_num);
 }
+
+char *generate_tag()
+{
+    char *tag = (char *)malloc(TAG_SIZE * sizeof(char));
+    return tag;
+}
+
+void modify_tag(char *tag)
+{
+    static int count = 0;
+    static char prefix = 'A';
+
+    sprintf(tag, "%c%03d", prefix, count++);
+
+    if (count == 101)
+    {
+        count = 0;
+        prefix++;
+    }
+}
