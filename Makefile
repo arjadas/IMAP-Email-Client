@@ -1,6 +1,6 @@
 # Define compiler and flags
 CC = gcc
-CFLAGS = -Wall -std=c11
+CFLAGS = -Wall 
 
 # Define the executable name
 TARGET = fetchmail
