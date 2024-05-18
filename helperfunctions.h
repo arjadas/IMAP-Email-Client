@@ -1,6 +1,11 @@
 #ifndef HELPERFUNCTIONS_H
 #define HELPERFUNCTIONS_H
 
+#include <assert.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+
 /* begin arguments processing here */
 #define MESSAGE_NOT_GIVEN -1
 
