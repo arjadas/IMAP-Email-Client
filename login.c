@@ -66,7 +66,7 @@ int connect_to_server(char *server_name)
 void login(int sockfd, char *tag, char *username, char *password)
 {
     char buffer[BUFFER_SIZE];
-    int bytes_received = 0;
+    // int bytes_received = 0;
 
     modify_tag(tag);
     // printf("%s\n", tag);
@@ -80,8 +80,8 @@ void login(int sockfd, char *tag, char *username, char *password)
     // memset(buffer, 0, BUFFER_SIZE);
 
     // receiving response
-    bytes_received = read(sockfd, buffer, BUFFER_SIZE); // -1 to for the null terminator at the end
-    printf("%s\n", buffer);
+    /*bytes_received =*/read(sockfd, buffer, BUFFER_SIZE);
+    // printf("%s\n", buffer);
 
     // check if login was successful
     if (strstr(buffer, "OK") == NULL) // is it better to convert response to lower case and compare or compare twice OK & ok?
@@ -95,7 +95,7 @@ void login(int sockfd, char *tag, char *username, char *password)
 void select_folder(int sockfd, char *tag, char *folder_name)
 {
     char buffer[BUFFER_SIZE];
-    int bytes_received = 0;
+    // int bytes_received = 0;
 
     modify_tag(tag);
     // printf("%s\n", tag);
@@ -106,8 +106,8 @@ void select_folder(int sockfd, char *tag, char *folder_name)
     write(sockfd, buffer, strlen(buffer));
 
     // receive response
-    bytes_received = read(sockfd, buffer, BUFFER_SIZE);
-    printf("%s\n", buffer);
+    /*bytes_received =*/read(sockfd, buffer, BUFFER_SIZE);
+    // printf("%s\n", buffer);
 
     // Check if folder exists
     if (strstr(buffer, "OK") == NULL)
