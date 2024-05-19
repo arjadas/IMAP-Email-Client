@@ -1,6 +1,13 @@
 #ifndef HELPERFUNCTIONS_H
 #define HELPERFUNCTIONS_H
 
+#include <assert.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+#define TAG_SIZE 5
+
 /* begin arguments processing here */
 #define MESSAGE_NOT_GIVEN -1
 
@@ -31,6 +38,7 @@ void print_inputs(inputs_t *inputs);
 
 /* end argument processing here */
 
-char *getTag();
+char *generate_tag();
+void modify_tag(char *tag);
 
 #endif

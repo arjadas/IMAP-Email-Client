@@ -1,9 +1,32 @@
-fetchmail: 
-	gcc -Wall -o  -lm
+# Define compiler and flags
+CC = gcc
+CFLAGS = -Wall 
 
-main.o: main.c read.h process.h queue.h task1.h task2.h task3.h task4.h page.h helperfunctions.h
-	gcc -Wall -o main.o main.c -c
-helperfunctions.o: helperfunctions.c helperfunctions.h
-	gcc -Wall -o helperfunctions.o 
+# Define the executable name
+TARGET = fetchmail
+
+# Define the source files
+SRC = main.c login.c retrieve.c helperfunctions.c
+# Define the object files
+OBJ = $(SRC:.c=.o)
+
+# Define the header files
+HEADERS = login.h retrieve.h helperfunctions.h
+
+# Default target: build the executable
+all: $(TARGET)
+
+# Rule to build the executable
+$(TARGET): $(OBJ)
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJ)
+
+# Rule to build object files
+%.o: %.c $(HEADERS)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Rule to clean the build
 clean:
-	rm -f *.o fetchmail
+	rm -f $(OBJ) $(TARGET)
+
+# Phony targets
+.PHONY: all clean
