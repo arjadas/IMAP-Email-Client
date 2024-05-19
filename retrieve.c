@@ -3,7 +3,9 @@
 void retrieve(int sockfd, char *tag, int message_num, char *folder_name)
 {
     char buffer[BUFFER_SIZE];
+    char temp[BUFFER_SIZE];
     int bytes_received = 1;
+    char *line;
 
     modify_tag(tag);
 
@@ -26,12 +28,30 @@ void retrieve(int sockfd, char *tag, int message_num, char *folder_name)
 
     write(sockfd, buffer, strlen(buffer));
 
+    sprintf(temp, "%s OK", tag);
+    printf("%s\n", temp);
+
     // receive response
     while (bytes_received > 0)
     {
         bytes_received = read(sockfd, buffer, BUFFER_SIZE);
         // printf("%d\n", bytes_received);
-        printf("%s\n", buffer);
+
+        line = strtok(buffer, "\n");
+
+        while (line != NULL)
+        {
+            if (strstr(line, temp) == NULL || strstr(line, "* ") == NULL)
+            {
+                printf(" %s\n", line);
+            }
+            else if (strstr(line, ")\r\n"))
+            {
+                break;
+            }
+
+            line = strtok(NULL, "\n");
+        }
     }
     exit(0);
 }
