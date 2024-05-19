@@ -76,6 +76,14 @@ inputs_t *process_args(int argc, char **argv)
         /* always increase regardless */
         i++;
     }
+    /* check if a filenmae was provided */
+    if (inputs->folder == NULL)
+    {
+        /* set to INBOX */
+        strdup(inputs->folder, "INBOX");
+        assert(inputs->folder);
+    }
+    
     return inputs;
 }
 

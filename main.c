@@ -35,8 +35,20 @@ int main(int argc, char **argv)
     // select the folder
     select_folder(sockfd, tag, inputs->folder);
 
-    // retrieve the email if command line says retrieve
-    retrieve(sockfd, tag, inputs->message_num, inputs->folder);
+    // run function depending on command
+    if (strcmp(inputs->command, "retrieve"))
+    {
+        retrieve(sockfd, tag, inputs->message_num, inputs->folder);
+    }
+    else if (strcmp(inputs->command, "parse"))
+    {
+        /* parse function call goes here */
+    }
+    else if (strcmp(inputs->command, "mime"))
+    {
+        /* mime function call goes here*/
+    }
+    
 
     close(sockfd); // closing the socket at end
 
