@@ -6,7 +6,7 @@ CFLAGS = -Wall
 TARGET = fetchmail
 
 # Define the source files
-SRC = main.c login.c retrieve.c helperfunctions.c
+SRC = main.c login.c retrieve.c helperfunctions.c mime.c
 # Define the object files
 OBJ = $(SRC:.c=.o)
 

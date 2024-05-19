@@ -13,6 +13,7 @@
 #include "helperfunctions.h"
 #include "login.h"
 #include "retrieve.h"
+#include "mime.h"
 
 int main(int argc, char **argv)
 {
@@ -31,22 +32,26 @@ int main(int argc, char **argv)
 
     // logging in
     login(sockfd, tag, inputs->username, inputs->password);
-
+    printf("MADE IT TO MAIN.C 35\n");
     // select the folder
     select_folder(sockfd, tag, inputs->folder);
-
+    printf("MADE IT TO MAIN.C 38\n");
     // run function depending on command
-    if (strcmp(inputs->command, "retrieve"))
+    if (!strcmp(inputs->command, "retrieve"))
     {
+        printf("MADE IT TO MAIN.C 42\n");
         retrieve(sockfd, tag, inputs->message_num, inputs->folder);
     }
-    else if (strcmp(inputs->command, "parse"))
+    else if (!strcmp(inputs->command, "parse"))
     {
+        printf("MADE IT TO MAIN.C 47\n");
         /* parse function call goes here */
     }
-    else if (strcmp(inputs->command, "mime"))
+    else if (!strcmp(inputs->command, "mime"))
     {
-        /* mime function call goes here*/
+        /* mime function call goes here */
+        printf("MADE IT TO MAIN.C 53\n");
+        mime(sockfd, tag, inputs->message_num, inputs->folder);
     }
     
 
