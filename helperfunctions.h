@@ -7,6 +7,7 @@
 #include <stdio.h>
 
 #define TAG_SIZE 5
+#define INBOX_LEN 5
 
 /* begin arguments processing here */
 #define MESSAGE_NOT_GIVEN -1

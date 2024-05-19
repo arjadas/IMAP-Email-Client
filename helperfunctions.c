@@ -80,8 +80,14 @@ inputs_t *process_args(int argc, char **argv)
     if (inputs->folder == NULL)
     {
         /* set to INBOX */
-        strdup(inputs->folder, "INBOX");
+        char inbox[] = "INBOX";
+        inputs->folder = (char *)malloc(sizeof(char)*(INBOX_LEN + 1));
         assert(inputs->folder);
+        for (int i = 0; i < INBOX_LEN; i++)
+        {
+            inputs->folder[i] = inbox[i];
+        }
+        inputs->folder[i++] = '\0';
     }
     
     return inputs;
