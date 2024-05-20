@@ -5,7 +5,7 @@ void retrieve(int sockfd, char *tag, int message_num, char *folder_name)
     char buffer[BUFFER_SIZE];
     char temp[BUFFER_SIZE];
     int bytes_received = 1;
-    char *line;
+    char line[BUFFER_SIZE];
     int print_line = 0; // whether to print the line or not
     int body_end = 0;
 
@@ -30,42 +30,47 @@ void retrieve(int sockfd, char *tag, int message_num, char *folder_name)
 
     write(sockfd, buffer, strlen(buffer));
 
+    FILE *file = fdopen(sockfd, "r");
+    assert(file);
+
     memset(buffer, 0, BUFFER_SIZE); // resetting the buffer
 
-    sprintf(temp, ")\r\n%s OK Fetch completed", tag);
+    sprintf(temp, "%s OK Fetch completed", tag);
     // printf("%s\n", temp);
 
     // receive response
-    while (bytes_received != 0 && body_end != 1)
+    while ((fgets(buffer, BUFFER_SIZE, file) != NULL) && body_end != 1)
     {
-        bytes_received = read(sockfd, buffer, BUFFER_SIZE);
 
-        printf("\n%d*************************************************\n", bytes_received);
+        // printf("\n%d*************************************************\n", (int)strlen(buffer));
 
-        line = strtok(buffer, "\r\n");
-        // printf("this line- %s\n", line);
-
-        while (line != NULL)
+        if (strstr(buffer, "(BODY[]"))
         {
-            if (strstr(line, "(BODY[]"))
-            {
-                print_line = 1;
-                // continue;
-            }
+            print_line = 1;
+            // continue;
+        }
 
-            if (strstr(line, temp) != NULL)
+        if (strstr(buffer, ")\r\n"))
+        {
+            strcpy(line, buffer);
+            fgets(buffer, BUFFER_SIZE, file);
+
+            if (strstr(buffer, temp) != NULL)
             {
                 print_line = 0;
                 body_end = 1;
-                // continue;
+                break;
             }
-
-            if (print_line == 1 && line[0] != '*')
+            else
             {
-                printf("%s\r\n", line);
+                if (buffer[0] != '*')
+                    printf("%s", line);
             }
+        }
 
-            line = strtok(NULL, "\r\n");
+        if (print_line == 1 && buffer[0] != '*')
+        {
+            printf("%s", buffer);
         }
 
         // printf("%s", buffer);
