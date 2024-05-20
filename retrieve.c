@@ -6,6 +6,8 @@ void retrieve(int sockfd, char *tag, int message_num, char *folder_name)
     char temp[BUFFER_SIZE];
     int bytes_received = 1;
     char *line;
+    int print_line = 0; // whether to print the line or not
+    int body_end = 0;
 
     modify_tag(tag);
 
@@ -28,30 +30,47 @@ void retrieve(int sockfd, char *tag, int message_num, char *folder_name)
 
     write(sockfd, buffer, strlen(buffer));
 
-    sprintf(temp, "%s OK", tag);
-    printf("%s\n", temp);
+    memset(buffer, 0, BUFFER_SIZE); // resetting the buffer
+
+    sprintf(temp, ")\r\n%s OK Fetch completed", tag);
+    // printf("%s\n", temp);
 
     // receive response
-    while (bytes_received > 0)
+    while (bytes_received != 0 && body_end != 1)
     {
         bytes_received = read(sockfd, buffer, BUFFER_SIZE);
-        // printf("%d\n", bytes_received);
 
-        line = strtok(buffer, "\n");
+        printf("\n%d*************************************************\n", bytes_received);
+
+        line = strtok(buffer, "\r\n");
+        // printf("this line- %s\n", line);
 
         while (line != NULL)
         {
-            if (strstr(line, temp) == NULL || strstr(line, "* ") == NULL)
+            if (strstr(line, "(BODY[]"))
             {
-                printf(" %s\n", line);
-            }
-            else if (strstr(line, ")\r\n"))
-            {
-                break;
+                print_line = 1;
+                // continue;
             }
 
-            line = strtok(NULL, "\n");
+            if (strstr(line, temp) != NULL)
+            {
+                print_line = 0;
+                body_end = 1;
+                // continue;
+            }
+
+            if (print_line == 1 && line[0] != '*')
+            {
+                printf("%s\r\n", line);
+            }
+
+            line = strtok(NULL, "\r\n");
         }
+
+        // printf("%s", buffer);
+
+        memset(buffer, 0, BUFFER_SIZE); // resetting the buffer
     }
     exit(0);
 }

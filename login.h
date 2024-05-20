@@ -4,7 +4,7 @@
 #define _POSIX_C_SOURCE 200112L
 
 #define SERVER_PORT "143"
-#define BUFFER_SIZE 256
+#define BUFFER_SIZE 1024
 
 #include <stdio.h>
 #include <stdlib.h>

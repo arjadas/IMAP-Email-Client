@@ -6,12 +6,12 @@ CFLAGS = -Wall
 TARGET = fetchmail
 
 # Define the source files
-SRC = main.c login.c retrieve.c helperfunctions.c
+SRC = main.c login.c retrieve.c helperfunctions.c parse.c
 # Define the object files
 OBJ = $(SRC:.c=.o)
 
 # Define the header files
-HEADERS = login.h retrieve.h helperfunctions.h
+HEADERS = login.h retrieve.h helperfunctions.h parse.h
 
 # Default target: build the executable
 all: $(TARGET)

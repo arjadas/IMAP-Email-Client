@@ -13,6 +13,7 @@
 #include "helperfunctions.h"
 #include "login.h"
 #include "retrieve.h"
+#include "parse.h"
 
 int main(int argc, char **argv)
 {
@@ -36,19 +37,18 @@ int main(int argc, char **argv)
     select_folder(sockfd, tag, inputs->folder);
 
     // run function depending on command
-    if (strcmp(inputs->command, "retrieve"))
+    if (strcmp(inputs->command, "retrieve") == 0)
     {
         retrieve(sockfd, tag, inputs->message_num, inputs->folder);
     }
-    else if (strcmp(inputs->command, "parse"))
+    else if (strcmp(inputs->command, "parse") == 0)
     {
-        /* parse function call goes here */
+        parse(sockfd, tag, inputs->message_num, inputs->folder);
     }
-    else if (strcmp(inputs->command, "mime"))
+    else if (strcmp(inputs->command, "mime") == 0)
     {
         /* mime function call goes here*/
     }
-    
 
     close(sockfd); // closing the socket at end
 
