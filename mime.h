@@ -7,5 +7,8 @@
 #include <stdio.h>
 
 void mime(int sockfd, char *tag, int message_num, char *folder_name);
+int match_mime_version(int sockfd, char *tag, int message_num, char *folder_name);
+int match_content_type(int sockfd, char *tag, int message_num, char *folder_name);
+int match_type_subtype(int sockfd, char *tag, int message_num, char *folder_name);
 
 #endif

@@ -8,6 +8,8 @@
 
 #define TAG_SIZE 5
 #define INBOX_LEN 5
+#define TRUE 1
+#define FALSE 0
 
 /* begin arguments processing here */
 #define MESSAGE_NOT_GIVEN -1
