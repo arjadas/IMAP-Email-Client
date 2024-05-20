@@ -51,13 +51,11 @@ void retrieve(int sockfd, char *tag, int message_num, char *folder_name)
             is_body = 1;
             continue;
         }
-
-        if (buffer[0] == '*' && is_body == 0)
+        else if (buffer[0] == '*' && is_body == 0)
         {
             continue;
         }
-
-        if (strstr(buffer, ")\r\n"))
+        else if (strstr(buffer, ")\r\n"))
         {
             strcpy(line, buffer);
             fgets(buffer, BUFFER_SIZE, file);
@@ -73,6 +71,11 @@ void retrieve(int sockfd, char *tag, int message_num, char *folder_name)
 
                 printf("%s", line);
             }
+        }
+        else if (strstr(buffer, "BAD Error"))
+        {
+            printf("Message not found\n");
+            exit(3);
         }
 
         if (is_body == 1)

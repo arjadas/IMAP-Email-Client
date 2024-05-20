@@ -81,7 +81,7 @@ inputs_t *process_args(int argc, char **argv)
     {
         /* set to INBOX */
         char inbox[] = "INBOX";
-        inputs->folder = (char *)malloc(sizeof(char)*(INBOX_LEN + 1));
+        inputs->folder = (char *)malloc(sizeof(char) * (INBOX_LEN + 1));
         assert(inputs->folder);
         for (int i = 0; i < INBOX_LEN; i++)
         {
@@ -89,7 +89,7 @@ inputs_t *process_args(int argc, char **argv)
         }
         inputs->folder[i++] = '\0';
     }
-    
+
     return inputs;
 }
 

@@ -105,7 +105,7 @@ void select_folder(int sockfd, char *tag, char *folder_name)
     // printf("%s\n", tag);
 
     // tell the system which folder to read from
-    sprintf(buffer, "%s SELECT %s\r\n", tag, folder_name);
+    sprintf(buffer, "%s SELECT \"%s\"\r\n", tag, folder_name);
     // printf("%s\n", buffer);
     write(sockfd, buffer, strlen(buffer));
 
@@ -116,7 +116,7 @@ void select_folder(int sockfd, char *tag, char *folder_name)
     // Check if folder exists
     if (strstr(buffer, "OK") == NULL)
     {
-        fprintf(stderr, "Folder not found\n");
+        printf("Folder not found\n");
         exit(3);
     }
 }
