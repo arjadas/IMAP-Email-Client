@@ -71,6 +71,10 @@ void login(int sockfd, char *tag, char *username, char *password)
     modify_tag(tag);
     // printf("%s\n", tag);
 
+    read(sockfd, buffer, BUFFER_SIZE);
+    memset(buffer, 0, BUFFER_SIZE);
+    // printf("%s\n", buffer);
+
     // loggin in to the IMAP server
     sprintf(buffer, "%s LOGIN %s %s\r\n", tag, username, password);
     // printf("%s\n", buffer);
@@ -86,7 +90,7 @@ void login(int sockfd, char *tag, char *username, char *password)
     // check if login was successful
     if (strstr(buffer, "OK") == NULL) // is it better to convert response to lower case and compare or compare twice OK & ok?
     {
-        fprintf(stderr, "Login failure\n");
+        printf("Login failure\n");
         exit(3);
     }
 }

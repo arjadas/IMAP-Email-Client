@@ -4,9 +4,9 @@ void retrieve(int sockfd, char *tag, int message_num, char *folder_name)
 {
     char buffer[BUFFER_SIZE];
     char temp[BUFFER_SIZE];
-    int bytes_received = 1;
+    // int bytes_received = 1;
     char line[BUFFER_SIZE];
-    int print_line = 0; // whether to print the line or not
+    int is_body = 0; // whether to print the line or not
     int body_end = 0;
 
     modify_tag(tag);
@@ -44,10 +44,17 @@ void retrieve(int sockfd, char *tag, int message_num, char *folder_name)
 
         // printf("\n%d*************************************************\n", (int)strlen(buffer));
 
-        if (strstr(buffer, "(BODY[]"))
+        // printf("%c", buffer[0]);
+
+        if (strstr(buffer, "FETCH (BODY[]"))
         {
-            print_line = 1;
-            // continue;
+            is_body = 1;
+            continue;
+        }
+
+        if (buffer[0] == '*' && is_body == 0)
+        {
+            continue;
         }
 
         if (strstr(buffer, ")\r\n"))
@@ -57,18 +64,18 @@ void retrieve(int sockfd, char *tag, int message_num, char *folder_name)
 
             if (strstr(buffer, temp) != NULL)
             {
-                print_line = 0;
+                is_body = 0;
                 body_end = 1;
                 break;
             }
             else
             {
-                if (buffer[0] != '*')
-                    printf("%s", line);
+
+                printf("%s", line);
             }
         }
 
-        if (print_line == 1 && buffer[0] != '*')
+        if (is_body == 1)
         {
             printf("%s", buffer);
         }
