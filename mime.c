@@ -15,6 +15,7 @@ void mime(int sockfd, char *tag, int message_num, char *folder_name){
     char fetch_completed[] = "OK Fetch completed";
     int MIME_Version_found = FALSE;
     int Content_Type_found = FALSE;
+    int body_part = FALSE;
 
     /* step 1a: check for MIME-Version */
     if ( !(MIME_Version_found = match_mime_version(sockfd, tag, message_num, folder_name)) ) return;
@@ -23,16 +24,11 @@ void mime(int sockfd, char *tag, int message_num, char *folder_name){
     if ( !(Content_Type_found = match_content_type(sockfd, tag, message_num, folder_name)) ) return;
 
     /* step 2: get BODYSTRUCUTRE */
-    match_type_subtype(sockfd, tag, message_num, folder_name);
+    if ( !(body_part = match_type_subtype(sockfd, tag, message_num, folder_name)) ) return;
 
     /* step 3: extract part NUMBER from server */
     printf("STEP 4\n");
-    modify_tag(tag);
-    sprintf(buffer, "%s fetch %d (BODY.PEEK[1])\r\n", tag, message_num);
-    write(sockfd, buffer, strlen(buffer)); memset(buffer, 0, BUFFER_SIZE);
-    bytes_received = read(sockfd, buffer, BUFFER_SIZE);
-    printf("%s\n", buffer);
-    memset(buffer, 0, BUFFER_SIZE);
+    get_body_part(sockfd, tag, message_num, body_part, folder_name);
 
     printf("GOT TO THE END OF MIME\n");
     exit(0);
@@ -141,7 +137,47 @@ int match_content_type(int sockfd, char *tag, int message_num, char *folder_name
 int match_type_subtype(int sockfd, char *tag, int message_num, char *folder_name)
 {
     /*
-        finds the BODYSTRUCTURE so that we can look for the BODY PART number of Content-type:text/plain
+        finds the BODYSTRUCTURE so that we can look for the BODY PART number of Content-type:text/plain 
+    */
+    char buffer[BUFFER_SIZE];
+    int bytes_received = 1;
+    char fetch_completed[] = "OK Fetch completed";
+    int body_part;
+
+    /* new comms new tag */
+    modify_tag(tag);
+
+    /* request BODYSTRUCTURE from server */
+    sprintf(buffer, "%s fetch %d (BODYSTRUCTURE)\r\n", tag, message_num);
+    write(sockfd, buffer, strlen(buffer)); memset(buffer, 0, BUFFER_SIZE);
+    bytes_received = read(sockfd, buffer, BUFFER_SIZE);
+    while (bytes_received > 0)
+    {
+        /* debuggin print */
+        if (bytes_received > 0)
+        {
+            printf("%s, bytes_received = %d\n", buffer, bytes_received);
+            
+        }
+        /* search for stuff that we need */
+
+        /* stop when server is done */
+        if (strstr(buffer, fetch_completed) != NULL)
+        {
+            printf("BREAK\n\n");
+            break;
+        }
+        memset(buffer, 0, BUFFER_SIZE);
+        bytes_received = read(sockfd, buffer, BUFFER_SIZE);
+    }
+    body_part = 1;
+    return body_part;
+}
+
+int get_body_part(int sockfd, char *tag, int message_num, int body_part, char *folder_name)
+{
+    /* 
+        dfds
     */
     char buffer[BUFFER_SIZE];
     int bytes_received = 1;
@@ -150,17 +186,16 @@ int match_type_subtype(int sockfd, char *tag, int message_num, char *folder_name
     /* new comms new tag */
     modify_tag(tag);
 
-    /* request BODTSTRUCTURE from server */
-    sprintf(buffer, "%s fetch %d (BODYSTRUCTURE)\r\n", tag, message_num);
+    /* request BODY_PART `body_part` from server */
+    sprintf(buffer, "%s fetch %d (BODY.PEEK[%d])\r\n", tag, message_num, body_part);
     write(sockfd, buffer, strlen(buffer)); memset(buffer, 0, BUFFER_SIZE);
     bytes_received = read(sockfd, buffer, BUFFER_SIZE);
-    printf("%s\n", buffer);
     while (bytes_received > 0)
     {
         /* debuggin print */
         if (bytes_received > 0)
         {
-            printf("%s, bytes_received = %d\n", buffer, bytes_received);
+            printf("%s", buffer);
             
         }
         /* stop when server is done */
