@@ -1,7 +1,7 @@
 #define _POSIX_C_SOURCE 200112L // maybe removed
-
 #include <stdio.h>
 #include <stdlib.h>
+
 #include <string.h>
 
 // they may be remvoed as well
@@ -13,6 +13,7 @@
 #include "helperfunctions.h"
 #include "login.h"
 #include "retrieve.h"
+#include "mime.h"
 #include "parse.h"
 
 int main(int argc, char **argv)
@@ -32,10 +33,8 @@ int main(int argc, char **argv)
 
     // logging in
     login(sockfd, tag, inputs->username, inputs->password);
-
     // select the folder
     select_folder(sockfd, tag, inputs->folder);
-
     // run function depending on command
     if (strcmp(inputs->command, "retrieve") == 0)
     {
@@ -47,7 +46,8 @@ int main(int argc, char **argv)
     }
     else if (strcmp(inputs->command, "mime") == 0)
     {
-        /* mime function call goes here*/
+        /* mime function call goes here */
+        mime(sockfd, tag, inputs->message_num, inputs->folder);
     }
 
     close(sockfd); // closing the socket at end

@@ -1,12 +1,12 @@
 # Define compiler and flags
 CC = gcc
-CFLAGS = -Wall 
+CFLAGS = -Wall -D_GNU_SOURCE
 
 # Define the executable name
 TARGET = fetchmail
 
 # Define the source files
-SRC = main.c login.c retrieve.c helperfunctions.c parse.c
+SRC = main.c login.c retrieve.c helperfunctions.c parse.c mime.c
 # Define the object files
 OBJ = $(SRC:.c=.o)
 
