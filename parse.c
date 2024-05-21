@@ -2,26 +2,35 @@
 
 void parse(int sockfd, char *tag, int message_num)
 {
-    char buffer[BUFFER_SIZE];
-    char message[BUFFER_SIZE];
+    char *message;
 
-    extract_content(sockfd, tag, message_num, "From", &message);
-    printf("%s", buffer);
+    message = extract_content(sockfd, tag, message_num, "From");
+    printf("%s", message);
+
+    message = extract_content(sockfd, tag, message_num, "To");
+    printf("%s", message);
+
+    message = extract_content(sockfd, tag, message_num, "Date");
+    printf("%s", message);
+
+    message = extract_content(sockfd, tag, message_num, "Subject");
+    printf("%s", message);
+
+    free(message);
 
     exit(0);
 }
 
-char *extract_content(int sockfd, char *tag, int message_num, char *header, char *message)
+char *extract_content(int sockfd, char *tag, int message_num, char *header)
 {
     char buffer[BUFFER_SIZE];
     char end_message_ok[BUFFER_SIZE];
-    // char temp[BUFFER_SIZE];
     char line[BUFFER_SIZE];
     char content[BUFFER_SIZE] = {'\0'};
     int is_body = 0, body_end = 0;
     int content_present = 0;
     int curr_len = 0;
-    // int bytes_received = 1;
+    char *to_return;
 
     modify_tag(tag);
 
@@ -123,12 +132,21 @@ char *extract_content(int sockfd, char *tag, int message_num, char *header, char
     // printf("%s", content);
     if (content_present == 1)
     {
-        strcpy(message, content);
+        to_return = strdup(content);
     }
     else
     {
-        strcpy(message, "no subject");
+        if (strcmp(header, "Subject") == 0)
+        {
+            to_return = strdup("Subject: <No subject>");
+        }
+        else if (strcmp(header, "To") == 0)
+        {
+            to_return = strdup("To:");
+        }
     }
+
+    return to_return;
 }
 
 int is_alphanumeric(char *string)
