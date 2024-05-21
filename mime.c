@@ -204,7 +204,13 @@ void print_body_part(int sockfd, char *tag, int message_num, int body_part, char
     char *print_string = get_output_string(output);
 
     /* print the print_string */
-    printf("%s\n", print_string);
+    int i = 0;
+    while (print_string[i] != '\0')
+    {
+        printf("%c", print_string[i]);
+        i++;
+    }
+    printf("\r\n");
     free(print_string);
     free(output);
 }
