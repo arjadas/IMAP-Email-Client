@@ -1,7 +1,7 @@
 #define _POSIX_C_SOURCE 200112L // maybe removed
-
 #include <stdio.h>
 #include <stdlib.h>
+
 #include <string.h>
 
 // they may be remvoed as well

@@ -1,6 +1,6 @@
 # Define compiler and flags
 CC = gcc
-CFLAGS = -Wall 
+CFLAGS = -Wall -D_GNU_SOURCE
 
 # Define the executable name
 TARGET = fetchmail
