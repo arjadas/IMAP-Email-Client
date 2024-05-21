@@ -14,13 +14,13 @@ void mime(int sockfd, char *tag, int message_num, char *folder_name)
     int body_part = -1;
 
     /* step 1a: check for MIME-Version */
-    if ( !(match_mime_version(sockfd, tag, message_num, folder_name)) ) return;
+    if ( !(match_mime_version(sockfd, tag, message_num, folder_name)) ) exit(4);
 
     /* step 1b: check for Content-Type */
-    if ( !(match_content_type(sockfd, tag, message_num, folder_name)) ) return;
+    if ( !(match_content_type(sockfd, tag, message_num, folder_name)) ) exit(4);
 
     /* step 2: get BODYSTRUCUTRE */
-    if ( !((body_part = get_body_part(sockfd, tag, message_num, folder_name))) ) return;
+    if ( !((body_part = get_body_part(sockfd, tag, message_num, folder_name))) ) exit(4);
 
     /* step 3: extract part NUMBER from server */
     print_body_part(sockfd, tag, message_num, body_part, folder_name);
