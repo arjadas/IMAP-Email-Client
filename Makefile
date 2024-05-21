@@ -6,7 +6,7 @@ CFLAGS = -Wall -D_GNU_SOURCE
 TARGET = fetchmail
 
 # Define the source files
-SRC = main.c login.c retrieve.c helperfunctions.c parse.c mime.c
+SRC = main.c login.c retrieve.c helperfunctions.c parse.c mime.c list.c
 # Define the object files
 OBJ = $(SRC:.c=.o)
 
