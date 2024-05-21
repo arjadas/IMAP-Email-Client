@@ -1,6 +1,17 @@
 #include "parse.h"
 
-void parse(int sockfd, char *tag, int message_num, char *folder_name)
+void parse(int sockfd, char *tag, int message_num)
+{
+    char buffer[BUFFER_SIZE];
+    char message[BUFFER_SIZE];
+
+    extract_content(sockfd, tag, message_num, "From", &message);
+    printf("%s", buffer);
+
+    exit(0);
+}
+
+char *extract_content(int sockfd, char *tag, int message_num, char *header, char *message)
 {
     char buffer[BUFFER_SIZE];
     char end_message_ok[BUFFER_SIZE];
@@ -16,12 +27,12 @@ void parse(int sockfd, char *tag, int message_num, char *folder_name)
 
     if (message_num != MESSAGE_NOT_GIVEN)
     {
-        sprintf(buffer, "%s FETCH %d BODY.PEEK[HEADER.FIELDS (SUBJECT)]\r\n", tag, message_num);
+        sprintf(buffer, "%s FETCH %d BODY.PEEK[HEADER.FIELDS (%s)]\r\n", tag, message_num, header);
         // printf("%s", buffer);
     }
     else
     { // get the last recent message
-        sprintf(buffer, "%s FETCH * BODY.PEEK[HEADER.FIELDS (FROM)]\r\n", tag);
+        sprintf(buffer, "%s FETCH * BODY.PEEK[HEADER.FIELDS (%s)]\r\n", tag, header);
         // printf("%s", buffer);
     }
 
@@ -73,6 +84,11 @@ void parse(int sockfd, char *tag, int message_num, char *folder_name)
             }
             else
             {
+                // unfolding the very last line
+                curr_len = strlen(content);
+                content[--curr_len] = '\0';
+                content[--curr_len] = '\0';
+
                 // printf("%s", line);
                 strcat(content, line);
             }
@@ -93,8 +109,8 @@ void parse(int sockfd, char *tag, int message_num, char *folder_name)
         { // reading the folded lines
 
             curr_len = strlen(content);
-            content[curr_len - 1] = '\0';
-            content[curr_len - 2] = '\0';
+            content[--curr_len] = '\0';
+            content[--curr_len] = '\0';
 
             strcat(content, buffer);
         }
@@ -103,16 +119,16 @@ void parse(int sockfd, char *tag, int message_num, char *folder_name)
 
         memset(buffer, 0, BUFFER_SIZE); // resetting the buffer
     }
-    printf("%s", content);
 
-    /*while (bytes_received != 0)
+    // printf("%s", content);
+    if (content_present == 1)
     {
-        bytes_received = read(sockfd, buffer, BUFFER_SIZE);
-
-        printf("%s", buffer);
-    }*/
-
-    exit(0);
+        strcpy(message, content);
+    }
+    else
+    {
+        strcpy(message, "no subject");
+    }
 }
 
 int is_alphanumeric(char *string)

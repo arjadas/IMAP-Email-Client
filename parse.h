@@ -5,7 +5,8 @@
 #include "helperfunctions.h"
 #include <ctype.h>
 
-void parse(int sockfd, char *tag, int message_num, char *folder_name);
+void parse(int sockfd, char *tag, int message_num);
+char *extract_content(int sockfd, char *tag, int message_num, char *header, char *message);
 int is_alphanumeric(char *string);
 
 #endif

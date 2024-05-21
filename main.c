@@ -42,7 +42,7 @@ int main(int argc, char **argv)
     }
     else if (strcmp(inputs->command, "parse") == 0)
     {
-        parse(sockfd, tag, inputs->message_num, inputs->folder);
+        parse(sockfd, tag, inputs->message_num);
     }
     else if (strcmp(inputs->command, "mime") == 0)
     {
