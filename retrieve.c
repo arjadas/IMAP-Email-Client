@@ -55,7 +55,7 @@ void retrieve(int sockfd, char *tag, int message_num, char *folder_name)
         {
             continue;
         }
-        else if (strstr(buffer, ")\r\n"))
+        else if (strstr(buffer, ")\r\n") && is_body == 1)
         {
             strcpy(line, buffer);
             fgets(buffer, BUFFER_SIZE, file);

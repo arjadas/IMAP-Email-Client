@@ -8,7 +8,6 @@
 
 #define TAG_SIZE 5
 #define INBOX_LEN 5
-#define BUFFER_SIZE 1024
 
 /* begin arguments processing here */
 #define MESSAGE_NOT_GIVEN -1
