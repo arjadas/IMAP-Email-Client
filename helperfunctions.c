@@ -134,3 +134,62 @@ void modify_tag(char *tag)
         prefix++;
     }
 }
+
+char *get_fetch_line(int sockfd, char *completed_message)
+{
+    /*
+        reads in response from server until `completed_message` is found
+    */
+    char buffer[BUFFER_SIZE];
+    memset(buffer, 0, BUFFER_SIZE);
+    
+    char *output = (char *)malloc(sizeof(char) * BUFFER_SIZE);
+    memset(output, 0, BUFFER_SIZE);
+    assert(output);
+    
+    int fetch_incomplete = FALSE;
+    int bytes_received = 0;
+
+    /* get initial read and set null byte */
+    bytes_received = read(sockfd, output, BUFFER_SIZE - 1);
+    output[bytes_received] = '\0';
+
+    /* check if we're at the end of the response */
+    if (strstr(output, completed_message) != NULL) fetch_incomplete = TRUE;
+
+    /* get the rest of the response until `OK Fetch completed` found */
+    while (fetch_incomplete == FALSE)
+    {
+        /* append to buffer */
+        bytes_received = read(sockfd, buffer, BUFFER_SIZE - 1);
+        buffer[bytes_received] = '\0';
+
+        /* add to output string */
+        output = add_buffer_to_output_string(output, buffer, bytes_received);
+
+        /* check if we're at the end of the response */
+        if (strstr(output, completed_message) != NULL) 
+        {
+            fetch_incomplete = TRUE;
+            break;
+        }
+
+        /* reset buffer */
+        memset(buffer, 0, BUFFER_SIZE);
+    }
+    return output;
+}
+
+char *add_buffer_to_output_string(char *output, char *buffer, int bytes_received)
+{
+    /*
+        add buffer to the end of output
+    */
+    int new_size = strlen(output);
+    new_size = sizeof(char) * (strlen(output) + bytes_received + 1);
+    output = (char *)realloc(output, new_size);
+    assert(output);
+    strcat(output, buffer);
+    assert(output);
+    return output;
+}

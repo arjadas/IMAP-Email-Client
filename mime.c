@@ -46,7 +46,7 @@ int match_mime_version(int sockfd, char *tag, int message_num, char *folder_name
     write(sockfd, buffer, strlen(buffer)); memset(buffer, 0, BUFFER_SIZE);
 
     /* read in response from the server */
-    output = get_fetch_line(sockfd);
+    output = get_fetch_line(sockfd, FETCH_COMPLETED);
     assert(output);
     
     /* check for MIME-Version */
@@ -77,7 +77,7 @@ int match_content_type(int sockfd, char *tag, int message_num, char *folder_name
     write(sockfd, buffer, strlen(buffer)); memset(buffer, 0, BUFFER_SIZE);
     
     /* get response from the server */
-    output = get_fetch_line(sockfd);
+    output = get_fetch_line(sockfd, FETCH_COMPLETED);
     assert(output);
 
     /* check for Content-Type */
@@ -116,7 +116,7 @@ int get_body_part(int sockfd, char *tag, int message_num, char *folder_name)
     
     /* get response from the server */
     char *output = NULL;
-    output = get_fetch_line(sockfd); 
+    output = get_fetch_line(sockfd, FETCH_COMPLETED); 
 
     /* find location of second `(` that comes after `BODYSTRUCTURE` */
     start = strstr(output, "BODYSTRUCTURE");
@@ -199,7 +199,7 @@ void print_body_part(int sockfd, char *tag, int message_num, int body_part, char
     memset(buffer, 0, BUFFER_SIZE);
 
     /* edit the buffer that we print the right thing */
-    char *output = get_fetch_line(sockfd);
+    char *output = get_fetch_line(sockfd, FETCH_COMPLETED);
     assert(output);
     int length = 0;
     char *print_string = get_output_string(output, &length);
@@ -214,65 +214,6 @@ void print_body_part(int sockfd, char *tag, int message_num, int body_part, char
 
     free(print_string);
     free(output);
-}
-
-char *get_fetch_line(int sockfd)
-{
-    /*
-        reads in response from server until `OK Fetch completed`
-    */
-    char buffer[BUFFER_SIZE];
-    memset(buffer, 0, BUFFER_SIZE);
-    
-    char *output = (char *)malloc(sizeof(char) * BUFFER_SIZE);
-    memset(output, 0, BUFFER_SIZE);
-    assert(output);
-    
-    int fetch_incomplete = FALSE;
-    int bytes_received = 0;
-
-    /* get initial read and set null byte */
-    bytes_received = read(sockfd, output, BUFFER_SIZE - 1);
-    output[bytes_received] = '\0';
-
-    /* check if we're at the end of the response */
-    if (strstr(output, FETCH_COMPLETED) != NULL) fetch_incomplete = TRUE;
-
-    /* get the rest of the response until `OK Fetch completed` found */
-    while (fetch_incomplete == FALSE)
-    {
-        /* append to buffer */
-        bytes_received = read(sockfd, buffer, BUFFER_SIZE - 1);
-        buffer[bytes_received] = '\0';
-
-        /* add to output string */
-        output = add_buffer_to_output_string(output, buffer, bytes_received);
-
-        /* check if we're at the end of the response */
-        if (strstr(output, FETCH_COMPLETED) != NULL) 
-        {
-            fetch_incomplete = TRUE;
-            break;
-        }
-
-        /* reset buffer */
-        memset(buffer, 0, BUFFER_SIZE);
-    }
-    return output;
-}
-
-char *add_buffer_to_output_string(char *output, char *buffer, int bytes_received)
-{
-    /*
-        add buffer to the end of output
-    */
-    int new_size = strlen(output);
-    new_size = sizeof(char) * (strlen(output) + bytes_received + 1);
-    output = (char *)realloc(output, new_size);
-    assert(output);
-    strcat(output, buffer);
-    assert(output);
-    return output;
 }
 
 char *str_to_lower(char *str)
@@ -325,3 +266,5 @@ char *get_output_string(char *original_str, int *length)
 
     return output;
 }
+
+

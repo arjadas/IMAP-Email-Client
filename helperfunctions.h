@@ -5,11 +5,17 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <netdb.h>
+
 
 #define TAG_SIZE 5
 #define INBOX_LEN 5
 #define TRUE 1
 #define FALSE 0
+#define BUFFER_SIZE 1024
+#define FETCH_COMPLETED "OK Fetch completed"
+#define NULL_BYTE '\0'
+
 
 /* begin arguments processing here */
 #define MESSAGE_NOT_GIVEN -1
@@ -43,5 +49,9 @@ void print_inputs(inputs_t *inputs);
 
 char *generate_tag();
 void modify_tag(char *tag);
+
+/* for getting server response for MIME and LIST */
+char *get_fetch_line(int sockfd, char *completed_message);
+char *add_buffer_to_output_string(char *output, char *buffer, int bytes_received);
 
 #endif

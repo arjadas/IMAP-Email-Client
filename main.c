@@ -15,6 +15,7 @@
 #include "retrieve.h"
 #include "mime.h"
 #include "parse.h"
+#include "list.h"
 
 int main(int argc, char **argv)
 {
@@ -48,6 +49,10 @@ int main(int argc, char **argv)
     {
         /* mime function call goes here */
         mime(sockfd, tag, inputs->message_num, inputs->folder);
+    }
+    else if (strcmp(inputs->command, "list") == 0)
+    {
+        list(sockfd, tag, inputs->folder);
     }
 
     close(sockfd); // closing the socket at end

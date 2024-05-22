@@ -11,7 +11,7 @@ SRC = main.c login.c retrieve.c helperfunctions.c parse.c mime.c list.c
 OBJ = $(SRC:.c=.o)
 
 # Define the header files
-HEADERS = login.h retrieve.h helperfunctions.h parse.h
+HEADERS = login.h retrieve.h helperfunctions.h parse.h list.h
 
 # Default target: build the executable
 all: $(TARGET)
