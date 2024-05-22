@@ -18,7 +18,7 @@ inputs_t *process_args(int argc, char **argv)
     /* initialise values */
     inputs->command = NULL;
     inputs->folder = NULL;
-    inputs->message_num = MESSAGE_NOT_GIVEN;
+    inputs->message_num = NULL;
     inputs->password = NULL;
     inputs->server_name = NULL;
     inputs->username = NULL;
@@ -59,7 +59,7 @@ inputs_t *process_args(int argc, char **argv)
             /* we have the message number next */
             assert((i + 1) < argc);
             i++;
-            inputs->message_num = atoi(argv[i]);
+            inputs->message_num = strdup(argv[i]);
         }
         else if (input == COMMAND)
         {
@@ -76,7 +76,7 @@ inputs_t *process_args(int argc, char **argv)
         /* always increase regardless */
         i++;
     }
-    /* check if a filenmae was provided */
+    /* check if a filename was provided */
     if (inputs->folder == NULL)
     {
         /* set to INBOX */
@@ -91,6 +91,12 @@ inputs_t *process_args(int argc, char **argv)
     }
 
     return inputs;
+}
+
+int validate_inputs(char *input)
+{
+    /* checks if `input` is an injection */
+    
 }
 
 void print_inputs(inputs_t *inputs)

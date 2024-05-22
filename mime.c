@@ -2,7 +2,7 @@
 /*    
     ("{} FETCH {} BODY.PEEK[HEADER.FIELDS (Content-Type)]\r\n", cur_tag, messagenum);
 */
-void mime(int sockfd, char *tag, int message_num, char *folder_name)
+void mime(int sockfd, char *tag, char *message_num, char *folder_name)
 {
     /*
         function to decode mime messages:
@@ -11,6 +11,9 @@ void mime(int sockfd, char *tag, int message_num, char *folder_name)
             2a. If matched: Findcharset=UTF-8 block
             2b. If not matched: print error message and exit with status 4
     */
+    /* first extract the values from `message` num */
+    
+
     int body_part = -1;
 
     /* step 1a: check for MIME-Version */

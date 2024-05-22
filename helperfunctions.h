@@ -32,7 +32,7 @@ typedef struct
     char *username;
     char *password;
     char *folder;
-    int message_num;
+    char *message_num;
     char *command;
     char *server_name;
 } inputs_t;
@@ -44,6 +44,7 @@ typedef struct
 */
 inputs_t *process_args(int argc, char **argv);
 void print_inputs(inputs_t *inputs);
+int validate_inputs(char *input)
 
 /* end argument processing here */
 
