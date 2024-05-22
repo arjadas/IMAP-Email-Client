@@ -4,19 +4,19 @@ void parse(int sockfd, char *tag, char *message_num)
 {
     char *message;
 
-    message = extract_content(sockfd, tag, message_num, "From");
+    message = extract_content(sockfd, tag, message_num, "From", 0);
     printf("From: %s\n", message);
 
-    message = extract_content(sockfd, tag, message_num, "To");
+    message = extract_content(sockfd, tag, message_num, "To", 0);
     if (message != NULL)
         printf("To: %s\n", message);
     else
         printf("To:\n");
 
-    message = extract_content(sockfd, tag, message_num, "Date");
+    message = extract_content(sockfd, tag, message_num, "Date", 0);
     printf("Date: %s\n", message);
 
-    message = extract_content(sockfd, tag, message_num, "Subject");
+    message = extract_content(sockfd, tag, message_num, "Subject", 0);
     printf("Subject: %s\n", message);
 
     free(message);
@@ -24,16 +24,17 @@ void parse(int sockfd, char *tag, char *message_num)
     exit(0);
 }
 
-char *extract_content(int sockfd, char *tag, char *message_num, char *header)
+char *extract_content(int sockfd, char *tag, char *message_num, char *header, int is_list)
 {
     char buffer[BUFFER_SIZE];
     char end_message_ok[BUFFER_SIZE];
-    char line[BUFFER_SIZE];
+    // char line[BUFFER_SIZE];
     char content[BUFFER_SIZE] = {'\0'};
     int is_body = 0, body_end = 0;
     int content_present = 0;
     int curr_len = 0;
     char *to_return;
+    int message_count = 0;
 
     modify_tag(tag);
 
@@ -71,9 +72,9 @@ char *extract_content(int sockfd, char *tag, char *message_num, char *header)
         {
             continue;
         }
-        else if (strstr(buffer, ")\r\n") && is_body == 1)
+        else if (strcmp(buffer, ")\r\n") == 0 && is_body == 1)
         {
-            strcpy(line, buffer);
+            // strcpy(line, buffer);
             memset(buffer, 0, BUFFER_SIZE);
             fgets(buffer, BUFFER_SIZE, file);
 
@@ -85,7 +86,7 @@ char *extract_content(int sockfd, char *tag, char *message_num, char *header)
                 // content[--curr_len] = '\0';
                 break;
             }
-            else
+            /*else
             {
                 // unfolding the very last line
                 curr_len = strlen(content);
@@ -95,7 +96,7 @@ char *extract_content(int sockfd, char *tag, char *message_num, char *header)
                 // content[--curr_len] = '\0';
 
                 strcat(content, line);
-            }
+            }*/
         }
         else if (strstr(buffer, "BAD Error"))
         {

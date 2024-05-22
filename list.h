@@ -4,9 +4,8 @@
 #include "login.h"
 #include "helperfunctions.h"
 
-#define STATUS_COMPLETED 
+#define STATUS_COMPLETED
 
 void list(int sockfd, char *tag, char *folder_name);
-char *extract_message(char *input);
 
 #endif
