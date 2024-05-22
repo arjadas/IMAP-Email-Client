@@ -5,16 +5,19 @@ void parse(int sockfd, char *tag, int message_num)
     char *message;
 
     message = extract_content(sockfd, tag, message_num, "From");
-    printf("%s", message);
+    printf("From: %s", message);
 
     message = extract_content(sockfd, tag, message_num, "To");
-    printf("%s", message);
+    if (message != NULL)
+        printf("To: %s", message);
+    else
+        printf("%s", "");
 
     message = extract_content(sockfd, tag, message_num, "Date");
-    printf("%s", message);
+    printf("Date: %s", message);
 
     message = extract_content(sockfd, tag, message_num, "Subject");
-    printf("%s", message);
+    printf("Subject: %s", message);
 
     free(message);
 
@@ -37,19 +40,11 @@ char *extract_content(int sockfd, char *tag, int message_num, char *header)
     if (message_num != MESSAGE_NOT_GIVEN)
     {
         sprintf(buffer, "%s FETCH %d BODY.PEEK[HEADER.FIELDS (%s)]\r\n", tag, message_num, header);
-        // printf("%s", buffer);
     }
     else
     { // get the last recent message
         sprintf(buffer, "%s FETCH * BODY.PEEK[HEADER.FIELDS (%s)]\r\n", tag, header);
-        // printf("%s", buffer);
     }
-
-    /*if ( == 0)
-    {
-        fprintf(stderr, "Message not found\n");
-        exit(3);
-    }*/
 
     write(sockfd, buffer, strlen(buffer));
 
@@ -59,7 +54,6 @@ char *extract_content(int sockfd, char *tag, int message_num, char *header)
     memset(buffer, 0, BUFFER_SIZE); // resetting the buffer
 
     sprintf(end_message_ok, "%s OK Fetch completed", tag);
-    // printf("%s\n", end_message_ok);
 
     // receive response
     while ((fgets(buffer, BUFFER_SIZE, file) != NULL) && body_end != 1)
@@ -67,8 +61,6 @@ char *extract_content(int sockfd, char *tag, int message_num, char *header)
 
         // printf("\n%d*************************************************\n", (int)strlen(buffer));
         // printf("%s", buffer);
-
-        // printf("%c", buffer[0]);
 
         if (strstr(buffer, "FETCH (BODY["))
         {
@@ -89,6 +81,8 @@ char *extract_content(int sockfd, char *tag, int message_num, char *header)
             {
                 is_body = 0;
                 body_end = 1;
+                // remove CR
+                content[--curr_len] = '\0';
                 break;
             }
             else
@@ -97,8 +91,9 @@ char *extract_content(int sockfd, char *tag, int message_num, char *header)
                 curr_len = strlen(content);
                 content[--curr_len] = '\0';
                 content[--curr_len] = '\0';
+                // remove CR
+                content[--curr_len] = '\0';
 
-                // printf("%s", line);
                 strcat(content, line);
             }
         }
@@ -110,26 +105,26 @@ char *extract_content(int sockfd, char *tag, int message_num, char *header)
 
         if ((is_body == 1) && is_alphanumeric(buffer) != 0 && content_present == 0)
         { // reading the first line
-            // printf("%s", buffer);
+
+            remove_header(buffer, header);
             content_present = 1;
             strcat(content, buffer);
         }
         else if ((is_body == 1) && is_alphanumeric(buffer) != 0 && content_present == 1)
-        { // reading the folded lines
+        { // reading the folded lines, and unfolding them
 
             curr_len = strlen(content);
             content[--curr_len] = '\0';
+            content[--curr_len] = '\0';
+            // remove CR
             content[--curr_len] = '\0';
 
             strcat(content, buffer);
         }
 
-        // printf("%s", buffer);
-
         memset(buffer, 0, BUFFER_SIZE); // resetting the buffer
     }
 
-    // printf("%s", content);
     if (content_present == 1)
     {
         to_return = strdup(content);
@@ -138,15 +133,24 @@ char *extract_content(int sockfd, char *tag, int message_num, char *header)
     {
         if (strcmp(header, "Subject") == 0)
         {
-            to_return = strdup("Subject: <No subject>");
+            to_return = strdup("<No subject>");
         }
         else if (strcmp(header, "To") == 0)
         {
-            to_return = strdup("To:");
+            to_return = NULL;
         }
     }
 
     return to_return;
+}
+
+void remove_header(char message[BUFFER_SIZE], char *header)
+{
+    char temp[1024] = {'\0'};
+
+    strcpy(temp, message + strlen(header) + 2); // +2 because of a colon and space after the header
+    memset(message, 0, BUFFER_SIZE);
+    strcpy(message, temp);
 }
 
 int is_alphanumeric(char *string)
