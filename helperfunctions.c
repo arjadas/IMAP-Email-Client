@@ -9,6 +9,12 @@ inputs_t *process_args(int argc, char **argv)
         fetchmail-u <username> -p <password> [-f <folder>] [-n <messageNum>] [-t]<command> <server_name>
         Where <command> may be one of: retrieve, parse, mime, or list.
     */
+   
+    /* first check we have enough arguments */
+    if ((argc < 7) || (argc > 12)) {
+        printf("Incorrect number of arguments. \n");
+        exit(3);
+    }
 
     /* make an inputs_t struct */
     inputs_t *inputs = (inputs_t *)malloc(sizeof(inputs_t));
