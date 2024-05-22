@@ -1,8 +1,6 @@
 #ifndef LOGIN_H
 #define LOGIN_H
 
-#define _POSIX_C_SOURCE 200112L
-
 #define SERVER_PORT "143"
 
 #include <stdio.h>

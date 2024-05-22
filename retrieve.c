@@ -4,7 +4,6 @@ void retrieve(int sockfd, char *tag, char *message_num, char *folder_name)
 {
     char buffer[BUFFER_SIZE];
     char temp[BUFFER_SIZE];
-    // int bytes_received = 1;
     char line[BUFFER_SIZE];
     int is_body = 0; // whether to print the line or not
     int body_end = 0;
@@ -14,38 +13,24 @@ void retrieve(int sockfd, char *tag, char *message_num, char *folder_name)
     if (message_num != NULL)
     {
         sprintf(buffer, "%s FETCH %s BODY.PEEK[]\r\n", tag, message_num);
-        // printf("%s", buffer);
     }
     else
     { // get the last recent message
         sprintf(buffer, "%s FETCH * BODY.PEEK[]\r\n", tag);
-        // printf("%s", buffer);
     }
 
-    /*if ( == 0)
-    {
-        fprintf(stderr, "Message not found\n");
-        exit(3);
-    }*/
-
     write(sockfd, buffer, strlen(buffer));
+
+    memset(buffer, 0, BUFFER_SIZE); // resetting the buffer
 
     FILE *file = fdopen(sockfd, "r");
     assert(file);
 
-    memset(buffer, 0, BUFFER_SIZE); // resetting the buffer
-
     sprintf(temp, "%s OK Fetch completed", tag);
-    // printf("%s\n", temp);
 
     // receive response
     while ((fgets(buffer, BUFFER_SIZE, file) != NULL) && body_end != 1)
     {
-
-        // printf("\n%d*************************************************\n", (int)strlen(buffer));
-
-        // printf("%c", buffer[0]);
-
         if (strstr(buffer, "FETCH (BODY[]"))
         {
             is_body = 1;
@@ -82,8 +67,6 @@ void retrieve(int sockfd, char *tag, char *message_num, char *folder_name)
         {
             printf("%s", buffer);
         }
-
-        // printf("%s", buffer);
 
         memset(buffer, 0, BUFFER_SIZE); // resetting the buffer
     }
