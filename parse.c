@@ -109,17 +109,25 @@ char *extract_content_parse(int sockfd, char *tag, char *message_num, char *head
             remove_header(buffer, header);
             content_present = 1;
             strcat(content, buffer);
+
+            curr_len = strlen(content);
+            content[--curr_len] = '\0'; // removing LF
+            content[--curr_len] = '\0'; // removing CR
         }
         else if ((is_body == 1) && is_alphanumeric(buffer) != 0 && content_present == 1)
         { // reading the folded lines, and unfolding them
 
-            curr_len = strlen(content);
-            content[--curr_len] = '\0';
-            content[--curr_len] = '\0';
-            // remove CR
+            // curr_len = strlen(content);
             // content[--curr_len] = '\0';
+            // content[--curr_len] = '\0';
+            //  remove CR
+            //  content[--curr_len] = '\0';
 
             strcat(content, buffer);
+
+            curr_len = strlen(content);
+            content[--curr_len] = '\0'; // removing LF
+            content[--curr_len] = '\0'; // removing CR
         }
 
         memset(buffer, 0, BUFFER_SIZE); // resetting the buffer
@@ -127,8 +135,8 @@ char *extract_content_parse(int sockfd, char *tag, char *message_num, char *head
 
     if (content_present == 1)
     {
-        curr_len = strlen(content);
-        content[curr_len - 2] = '\0'; // removing CR
+        // curr_len = strlen(content);
+        // content[curr_len - 2] = '\0'; // removing CR
         to_return = strdup(content);
     }
     else
