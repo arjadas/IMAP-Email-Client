@@ -20,6 +20,6 @@ void print_body_part(int sockfd, char *tag, int message_num, int body_part, char
 char *get_fetch_line(int sockfd);
 char *add_buffer_to_output_string(char *output, char *buffer, int bytes_received);
 char *str_to_lower(char *str);
-char *get_output_string(char *original_str);
+char *get_output_string(char *original_str, int *length);
 
 #endif

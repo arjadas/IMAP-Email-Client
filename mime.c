@@ -201,16 +201,17 @@ void print_body_part(int sockfd, char *tag, int message_num, int body_part, char
     /* edit the buffer that we print the right thing */
     char *output = get_fetch_line(sockfd);
     assert(output);
-    char *print_string = get_output_string(output);
+    int length = 0;
+    char *print_string = get_output_string(output, &length);
 
     /* print the print_string */
     int i = 0;
-    while (print_string[i] != '\0')
+    while (i < length)
     {
         printf("%c", print_string[i]);
         i++;
     }
-    printf("\r\n");
+
     free(print_string);
     free(output);
 }
@@ -294,34 +295,33 @@ char *str_to_lower(char *str)
    return output;
 }
 
-char *get_output_string(char *original_str)
+char *get_output_string(char *original_str, int *length)
 {
     /* find the number of bytes (characters) to print */
     char *first_brace = strstr(original_str, "{");
     char *end_brace = first_brace;
-    int num_bytes = 0;
     while ((*end_brace) != '}')
     {
         end_brace++;
     }
     first_brace++;
-    size_t length = end_brace - first_brace;
-    char num_bytes_array[length + 1];
+    size_t num_digits = end_brace - first_brace;
+    char num_bytes_array[num_digits + 1];
     assert(num_bytes_array != NULL);
-    memcpy(num_bytes_array, first_brace, length);
-    num_bytes_array[length] = '\0';
-    num_bytes = atoi(num_bytes_array);
+    memcpy(num_bytes_array, first_brace, num_digits);
+    num_bytes_array[num_digits] = '\0';
+    (*length) = atoi(num_bytes_array);
 
     /* find the first "\n" */
     while ((*end_brace) != '\n')
     {
         end_brace++;
     }
+    end_brace++; 
 
     /* make the output string */
-    char *output = (char *)malloc(num_bytes + 1);
-    memcpy(output, (end_brace++), num_bytes);
-    output[num_bytes] = '\0';
+    char *output = (char *)malloc((*length));
+    memcpy(output, end_brace, (*length));
 
     return output;
 }
