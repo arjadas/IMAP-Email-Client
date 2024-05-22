@@ -1,6 +1,6 @@
 #include "parse.h"
 
-void parse(int sockfd, char *tag, int message_num)
+void parse(int sockfd, char *tag, char *message_num)
 {
     char *message;
 
@@ -24,7 +24,7 @@ void parse(int sockfd, char *tag, int message_num)
     exit(0);
 }
 
-char *extract_content(int sockfd, char *tag, int message_num, char *header)
+char *extract_content(int sockfd, char *tag, char *message_num, char *header)
 {
     char buffer[BUFFER_SIZE];
     char end_message_ok[BUFFER_SIZE];
@@ -37,9 +37,9 @@ char *extract_content(int sockfd, char *tag, int message_num, char *header)
 
     modify_tag(tag);
 
-    if (message_num != MESSAGE_NOT_GIVEN)
+    if (message_num != NULL)
     {
-        sprintf(buffer, "%s FETCH %d BODY.PEEK[HEADER.FIELDS (%s)]\r\n", tag, message_num, header);
+        sprintf(buffer, "%s FETCH %s BODY.PEEK[HEADER.FIELDS (%s)]\r\n", tag, message_num, header);
     }
     else
     { // get the last recent message
