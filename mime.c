@@ -13,7 +13,7 @@ void mime(int sockfd, char *tag, char *input_message_num, char *folder_name)
     for (int i = 0; input_message_num[i] != NULL_BYTE; i++)
     {
         if ( !(isdigit((int)input_message_num[i])) ){
-            printf("Invalid input for messageNum. Insert a number instead.\n");
+            fprintf(stderr, "Invalid input for messageNum. Insert a number instead.\n");
             exit(1);
         }
     }

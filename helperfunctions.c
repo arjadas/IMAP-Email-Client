@@ -109,18 +109,12 @@ inputs_t *process_args(int argc, char **argv)
     valid = validate_inputs(inputs);
     if (valid == FALSE)
     {
-        fprintf(stderr, "\"");
-        for (int i = 0; i < argc - 1; i++)
-        {
-            fprintf(stderr, "%s ", argv[i]);
-        }
-        fprintf(stderr, "%s\"", argv[argc - 1]);
-        exit(3);
+        fprintf(stderr, "Failed -- Return Code: 3\n");
     }
-    /*if (injection(inputs) == FALSE)
+    if (injection(inputs) == FALSE)
     {
-        printf("\n");
-    }*/
+        fprintf(stderr, "Failed, due to injection\n");
+    }
     return inputs;
 }
 
@@ -153,18 +147,30 @@ int is_seqnum(char *message_num)
     return TRUE;
 }
 
+// int validate_argv(int argc, char **argv)
+// {
+//     int j = 0;
+//     for (int i = 0; i < argc; i++)
+//     {
+//         while (argv[i][j] != NULL_BYTE)
+//         {
+//             if (isspace(argv[i][j]) != FALSE) re
+//         }
+//     }
+// }
+
 int validate_inputs(inputs_t *inputs)
 {
-    /* checks if `inputs` is an injection */
-    if (inputs->username == NULL)
+    /* checks if `inputs` is an invalid */
+    if ((inputs->username == NULL))
         return FALSE;
-    if (inputs->password == NULL)
+    if ((inputs->password == NULL))
         return FALSE;
-    if (inputs->command == NULL)
+    if ((inputs->command == NULL) )
         return FALSE;
-    if (inputs->server_name == NULL)
+    if ((inputs->server_name == NULL))
         return FALSE;
-    if (is_seqnum(inputs->message_num) == FALSE)
+    if ((is_seqnum(inputs->message_num)) == FALSE)
         return FALSE;
 
     return TRUE;
@@ -177,15 +183,15 @@ int injection(inputs_t *inputs)
     // if (strstr(inputs->command, "LOGIN") != NULL) return FALSE;
     // if (strstr(inputs->server_name, "LOGIN") != NULL) return FALSE;
     // if (strstr(inputs->message_num, "LOGIN") != NULL) return FALSE;
-    if (strstr(inputs->username, "\r\n") != NULL)
+    if ((inputs->username != NULL) && strstr(inputs->username, "\r\n") != NULL)
         return FALSE;
-    if (strstr(inputs->password, "\r\n") != NULL)
+    if ((inputs->password != NULL) && strstr(inputs->password, "\r\n") != NULL)
         return FALSE;
-    if (strstr(inputs->command, "\r\n") != NULL)
+    if ((inputs->command != NULL) && strstr(inputs->command, "\r\n") != NULL)
         return FALSE;
-    if (strstr(inputs->server_name, "\r\n") != NULL)
+    if ((inputs->server_name != NULL) && strstr(inputs->server_name, "\r\n") != NULL)
         return FALSE;
-    if (strstr(inputs->message_num, "\r\n") != NULL)
+    if ((inputs->message_num != NULL) && strstr(inputs->message_num, "\r\n") != NULL)
         return FALSE;
 
     return TRUE;
