@@ -45,7 +45,7 @@ void mime(int sockfd, char *tag, char *input_message_num, char *folder_name)
     /* step 3: extract part NUMBER from server */
     print_body_part(sockfd, tag, message_num, body_part, folder_name);
 
-    exit(0);
+    return;
 }
 
 int match_mime_version(int sockfd, char *tag, int message_num, char *folder_name)
@@ -167,6 +167,7 @@ int get_body_part(int sockfd, char *tag, int message_num, char *folder_name)
         start = end;
         end++;
     }
+    free(part);
     
     free(output);
     return body_part;

@@ -19,14 +19,9 @@
 
 int main(int argc, char **argv)
 {
-    /* first check we have enough arguments */
-    if ((argc < 7) || (argc > 12)) {
-        printf("Failed -- Return Code: 3\n");
-        exit(3);
-    }
+
 
     inputs_t *inputs = process_args(argc, argv);
-    // print_inputs(inputs);
 
     // establish connection to the server
     int sockfd = connect_to_server(inputs->server_name);
@@ -64,6 +59,13 @@ int main(int argc, char **argv)
     close(sockfd); // closing the socket at end
 
     free(tag);
+    free(inputs->command);
+    free(inputs->username);
+    free(inputs->password);
+    free(inputs->folder);
+    free(inputs->message_num);
+    free(inputs->server_name);
+    free(inputs);
 
     return 0;
 }

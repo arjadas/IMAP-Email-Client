@@ -12,11 +12,20 @@ inputs_t *process_args(int argc, char **argv)
 
     /* first check we have enough arguments */
     if ((argc < 7) || (argc > 12)) {
+        printf("\"");
+        for (int i = 0; i < argc - 1; i++)
+        {
+            printf("%s ", argv[i]);
+        }
+        printf("%s\"", argv[argc - 1]);
+        printf(" Failed -- Return Code: 3\n");
         exit(3);
     }
 
+
     /* make an inputs_t struct */
-    inputs_t *inputs = (inputs_t *)malloc(sizeof(inputs_t));
+    inputs_t *inputs = NULL;
+    inputs = (inputs_t *)malloc(sizeof(inputs_t));
     assert(inputs);
     assert(inputs != NULL);
 
@@ -88,26 +97,88 @@ inputs_t *process_args(int argc, char **argv)
         char inbox[] = "INBOX";
         inputs->folder = (char *)malloc(sizeof(char) * (INBOX_LEN + 1));
         assert(inputs->folder);
-        for (int i = 0; i < INBOX_LEN; i++)
+        int i = 0;
+        for (i = 0; i < INBOX_LEN; i++)
         {
             inputs->folder[i] = inbox[i];
         }
         inputs->folder[i++] = '\0';
     }
-    validate_inputs(inputs);
-
+    
+    int valid = TRUE;
+    valid = validate_inputs(inputs);
+    if (valid == FALSE)
+    {
+        printf("\"");
+        for (int i = 0; i < argc - 1; i++)
+        {
+            printf("%s ", argv[i]);
+        }
+        printf("%s\"", argv[argc - 1]);
+        printf(" Failed -- Return Code: 3\n");
+        exit(3);
+    }
+    if (injection(inputs) == FALSE)
+    {
+        printf("\n");
+    }
     return inputs;
 }
 
-void validate_inputs(inputs_t *inputs)
+int is_seqnum(char *message_num)
 {
-    char error_message[] = "Incorrect command line arguments";
+    if (message_num == NULL) return TRUE;
 
+    int length = strlen(message_num);
+    if (length == 1)
+    {
+        if ( (isdigit(message_num[0])) == FALSE)
+        {
+            return FALSE;
+        }
+        return TRUE;
+    }
+
+    for (int i = 0; i < (length - 1); i++)
+    {
+        if ( isdigit(message_num[i]) == FALSE )
+        {
+            return FALSE;
+        }
+    }
+    if ( (isdigit(message_num[length - 1])) == FALSE || (message_num[length - 1] != '*'))
+    {
+        return FALSE;
+    }
+    return TRUE;
+}
+
+int validate_inputs(inputs_t *inputs)
+{
     /* checks if `inputs` is an injection */
-    if (inputs->username == NULL) {printf("%s\n", error_message); exit(3);}
-    if (inputs->password == NULL) {printf("%s\n", error_message); exit(3);}
-    if (inputs->command == NULL) {printf("%s\n", error_message); exit(3);}
-    if (inputs->server_name == NULL) {printf("%s\n", error_message); exit(3);}
+    if (inputs->username == NULL) return FALSE;
+    if (inputs->password == NULL) return FALSE;
+    if (inputs->command == NULL) return FALSE;
+    if (inputs->server_name == NULL) return FALSE;
+    if (is_seqnum(inputs->message_num) == FALSE) return FALSE;
+
+    return TRUE;
+}
+
+int injection(inputs_t *inputs)
+{
+    // if (strstr(inputs->username, "LOGIN") != NULL) return FALSE;
+    // if (strstr(inputs->password, "LOGIN") != NULL) return FALSE;
+    // if (strstr(inputs->command, "LOGIN") != NULL) return FALSE;
+    // if (strstr(inputs->server_name, "LOGIN") != NULL) return FALSE;
+    // if (strstr(inputs->message_num, "LOGIN") != NULL) return FALSE;
+    if (strstr(inputs->username, "\r\n") != NULL) return FALSE;
+    if (strstr(inputs->password, "\r\n") != NULL) return FALSE;
+    if (strstr(inputs->command, "\r\n") != NULL) return FALSE;
+    if (strstr(inputs->server_name, "\r\n") != NULL) return FALSE;
+    if (strstr(inputs->message_num, "\r\n") != NULL) return FALSE;
+
+    return TRUE;
 }
 
 void print_inputs(inputs_t *inputs)

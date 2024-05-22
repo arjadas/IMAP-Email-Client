@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <netdb.h>
+#include <ctype.h>
 
 #include "login.h"
 
@@ -44,7 +45,9 @@ typedef struct
 */
 inputs_t *process_args(int argc, char **argv);
 void print_inputs(inputs_t *inputs);
-void validate_inputs(inputs_t *inputs);
+int validate_inputs(inputs_t *inputs);
+int is_seqnum(char *message_num);
+int injection(inputs_t *inputs);
 
 /* end argument processing here */
 
