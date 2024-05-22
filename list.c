@@ -3,22 +3,7 @@
 
 void list(int sockfd, char *tag, char *folder_name)
 {
-    // char buffer[BUFFER_SIZE];
-    // int bytes_received = 1;
-
     char *message;
-
-    /*sprintf(buffer, "%s fetch 1:* (BODY[HEADER.FIELDS (Subject)]) \r\n", tag);
-    write(sockfd, buffer, strlen(buffer));
-    memset(buffer, 0, BUFFER_SIZE);
-
-    // receive response
-    while (bytes_received > 0)
-    {
-        bytes_received = read(sockfd, buffer, BUFFER_SIZE);
-        printf("%d\n", bytes_received);
-        printf("%s", buffer);
-    }*/
 
     message = extract_content_list(sockfd, tag, "1:*", "Subject");
     printf("%s", message);
@@ -60,10 +45,6 @@ char *extract_content_list(int sockfd, char *tag, char *message_num, char *heade
     // receive response
     while ((fgets(buffer, BUFFER_SIZE, file) != NULL) && body_end != 1)
     {
-
-        // printf("\n%d*************************************************\n", (int)strlen(buffer));
-        // printf("%s", buffer);
-
         if (strstr(buffer, "FETCH (BODY["))
         {
             is_body = 1;
@@ -75,7 +56,6 @@ char *extract_content_list(int sockfd, char *tag, char *message_num, char *heade
         }
         else if (strcmp(buffer, ")\r\n") == 0 && is_body == 1)
         {
-            // strcpy(line, buffer);
             memset(buffer, 0, BUFFER_SIZE);
             fgets(buffer, BUFFER_SIZE, file);
 
@@ -83,8 +63,6 @@ char *extract_content_list(int sockfd, char *tag, char *message_num, char *heade
             {
                 is_body = 0;
                 body_end = 1;
-                // remove CR
-                // content[--curr_len] = '\0';
                 break;
             }
             else
@@ -123,10 +101,7 @@ char *extract_content_list(int sockfd, char *tag, char *message_num, char *heade
         { // reading the folded lines, and unfolding them
 
             curr_len = strlen(content);
-            content[--curr_len] = '\0'; // replacing \n with null byte
-            // content[--curr_len] = '\0';
-            //   remove CR
-            //   content[--curr_len] = '\0';
+            content[--curr_len] = '\0'; // replacing LF with null byte
 
             strcat(content, buffer);
 
@@ -138,14 +113,7 @@ char *extract_content_list(int sockfd, char *tag, char *message_num, char *heade
         if (is_alphanumeric(buffer) == 0 && subject_read == 1)
             continue;
 
-        if (content_present == 1)
-        {
-            // curr_len = strlen(content);
-            // content[curr_len - 1] = '\0'; // removing LF
-            // content[curr_len - 2] = '\0'; // removing CR
-            // to_return = strdup(content);
-        }
-        else if (content_present == 0 && subject_read == 0)
+        if (content_present == 0 && subject_read == 0)
         {
             if (strcmp(header, "Subject") == 0)
             {
@@ -155,7 +123,6 @@ char *extract_content_list(int sockfd, char *tag, char *message_num, char *heade
                 memset(temp, 0, BUFFER_SIZE);
 
                 strcat(content, "<No subject>\n");
-                // to_return = strdup("<No subject>");
             }
         }
 

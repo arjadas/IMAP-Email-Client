@@ -1,12 +1,6 @@
-// #define _POSIX_C_SOURCE 200112L // maybe removed
+#define _POSIX_C_SOURCE 200112L
 #include <stdio.h>
 #include <stdlib.h>
-
-#include <string.h>
-
-// they may be remvoed as well
-// #include <netdb.h>
-// #include <unistd.h>
 #include <string.h>
 #include <assert.h>
 
@@ -19,8 +13,6 @@
 
 int main(int argc, char **argv)
 {
-
-
     inputs_t *inputs = process_args(argc, argv);
 
     // establish connection to the server
@@ -35,8 +27,10 @@ int main(int argc, char **argv)
 
     // logging in
     login(sockfd, tag, inputs->username, inputs->password);
+
     // select the folder
     select_folder(sockfd, tag, inputs->folder);
+
     // run function depending on command
     if (strcmp(inputs->command, "retrieve") == 0)
     {
@@ -48,7 +42,6 @@ int main(int argc, char **argv)
     }
     else if (strcmp(inputs->command, "mime") == 0)
     {
-        /* mime function call goes here */
         mime(sockfd, tag, inputs->message_num, inputs->folder);
     }
     else if (strcmp(inputs->command, "list") == 0)

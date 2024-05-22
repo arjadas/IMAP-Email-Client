@@ -66,26 +66,21 @@ int connect_to_server(char *server_name)
 void login(int sockfd, char *tag, char *username, char *password)
 {
     char buffer[BUFFER_SIZE];
-    // int bytes_received = 0;
 
     modify_tag(tag);
-    // printf("%s\n", tag);
 
+    // to skip the first message received determining that a connection was established
     read(sockfd, buffer, BUFFER_SIZE);
     memset(buffer, 0, BUFFER_SIZE);
-    // printf("%s\n", buffer);
 
     // loggin in to the IMAP server
     sprintf(buffer, "%s LOGIN %s %s\r\n", tag, username, password);
-    // printf("%s\n", buffer);
     write(sockfd, buffer, strlen(buffer));
 
-    // do you think it's a good practice resetting the buffer after every action?
-    // memset(buffer, 0, BUFFER_SIZE);
+    memset(buffer, 0, BUFFER_SIZE);
 
     // receiving response
-    /*bytes_received =*/read(sockfd, buffer, BUFFER_SIZE);
-    // printf("%s\n", buffer);
+    read(sockfd, buffer, BUFFER_SIZE);
 
     // check if login was successful
     if (strstr(buffer, "OK") == NULL) // is it better to convert response to lower case and compare or compare twice OK & ok?
@@ -99,19 +94,17 @@ void login(int sockfd, char *tag, char *username, char *password)
 void select_folder(int sockfd, char *tag, char *folder_name)
 {
     char buffer[BUFFER_SIZE];
-    // int bytes_received = 0;
 
     modify_tag(tag);
-    // printf("%s\n", tag);
 
     // tell the system which folder to read from
     sprintf(buffer, "%s SELECT \"%s\"\r\n", tag, folder_name);
-    // printf("%s\n", buffer);
     write(sockfd, buffer, strlen(buffer));
 
+    memset(buffer, 0, BUFFER_SIZE);
+
     // receive response
-    /*bytes_received =*/read(sockfd, buffer, BUFFER_SIZE);
-    // printf("%s\n", buffer);
+    read(sockfd, buffer, BUFFER_SIZE);
 
     // Check if folder exists
     if (strstr(buffer, "OK") == NULL)
