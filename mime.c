@@ -2,7 +2,7 @@
 /*    
     ("{} FETCH {} BODY.PEEK[HEADER.FIELDS (Content-Type)]\r\n", cur_tag, messagenum);
 */
-void mime(int sockfd, char *tag, char *message_num, char *folder_name)
+void mime(int sockfd, char *tag, char *input_message_num, char *folder_name)
 {
     /*
         function to decode mime messages:
@@ -12,7 +12,14 @@ void mime(int sockfd, char *tag, char *message_num, char *folder_name)
             2b. If not matched: print error message and exit with status 4
     */
     /* first extract the values from `message` num */
-    
+    for (int i = 0; input_message_num[i] != NULL_BYTE; i++)
+    {
+        if ( !(isdigit((int)input_message_num[i])) ){
+            printf("Invalid input for messageNum. Insert a number instead.\n");
+            exit(1);
+        }
+    }
+    int message_num = atoi(input_message_num);
 
     int body_part = -1;
 
