@@ -89,21 +89,11 @@ char *extract_content_list(int sockfd, char *tag, char *message_num, char *heade
             }
             else
             {
-                // new subject area, hence resetting content present fot that area
+                // new subject area, hence resetting content present and subject read for that area
                 content_present = 0;
+                subject_read = 0;
                 continue;
             }
-            /*else
-            {
-                // unfolding the very last line
-                curr_len = strlen(content);
-                content[--curr_len] = '\0';
-                content[--curr_len] = '\0';
-                // remove CR
-                // content[--curr_len] = '\0';
-
-                strcat(content, line);
-            }*/
         }
         else if (strstr(buffer, "BAD Error"))
         {
@@ -115,6 +105,7 @@ char *extract_content_list(int sockfd, char *tag, char *message_num, char *heade
         { // reading the first line
 
             remove_header(buffer, header);
+            subject_read = 1;
             content_present = 1;
 
             // adding message number
@@ -123,17 +114,25 @@ char *extract_content_list(int sockfd, char *tag, char *message_num, char *heade
             memset(temp, 0, BUFFER_SIZE);
 
             strcat(content, buffer);
+
+            curr_len = strlen(content);
+            content[--curr_len] = '\0'; // removing LF
+            content[--curr_len] = '\n'; // replacing CR with LF
         }
         else if ((is_body == 1) && is_alphanumeric(buffer) != 0 && content_present == 1)
         { // reading the folded lines, and unfolding them
 
             curr_len = strlen(content);
-            content[--curr_len] = '\0';
-            content[--curr_len] = '\0';
-            //  remove CR
-            //  content[--curr_len] = '\0';
+            content[--curr_len] = '\0'; // replacing \n with null byte
+            // content[--curr_len] = '\0';
+            //   remove CR
+            //   content[--curr_len] = '\0';
 
             strcat(content, buffer);
+
+            curr_len = strlen(content);
+            content[--curr_len] = '\0'; // removing LF
+            content[--curr_len] = '\n'; // replacing CR with LF
         }
 
         if (is_alphanumeric(buffer) == 0 && subject_read == 1)
