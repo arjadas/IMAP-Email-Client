@@ -4,19 +4,19 @@ void parse(int sockfd, char *tag, char *message_num)
 {
     char *message;
 
-    message = extract_content(sockfd, tag, message_num, "From", 0);
+    message = extract_content_parse(sockfd, tag, message_num, "From");
     printf("From: %s\n", message);
 
-    message = extract_content(sockfd, tag, message_num, "To", 0);
+    message = extract_content_parse(sockfd, tag, message_num, "To");
     if (message != NULL)
         printf("To: %s\n", message);
     else
         printf("To:\n");
 
-    message = extract_content(sockfd, tag, message_num, "Date", 0);
+    message = extract_content_parse(sockfd, tag, message_num, "Date");
     printf("Date: %s\n", message);
 
-    message = extract_content(sockfd, tag, message_num, "Subject", 0);
+    message = extract_content_parse(sockfd, tag, message_num, "Subject");
     printf("Subject: %s\n", message);
 
     free(message);
@@ -24,17 +24,16 @@ void parse(int sockfd, char *tag, char *message_num)
     exit(0);
 }
 
-char *extract_content(int sockfd, char *tag, char *message_num, char *header, int is_list)
+char *extract_content_parse(int sockfd, char *tag, char *message_num, char *header)
 {
-    char buffer[BUFFER_SIZE];
+    char buffer[BUFFER_SIZE] = {'\0'};
     char end_message_ok[BUFFER_SIZE];
-    // char line[BUFFER_SIZE];
+    // char temp[BUFFER_SIZE] = {'\0'};
     char content[BUFFER_SIZE] = {'\0'};
     int is_body = 0, body_end = 0;
     int content_present = 0;
     int curr_len = 0;
     char *to_return;
-    int message_count = 0;
 
     modify_tag(tag);
 
