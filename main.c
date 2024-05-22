@@ -19,6 +19,11 @@
 
 int main(int argc, char **argv)
 {
+    /* first check we have enough arguments */
+    if ((argc < 7) || (argc > 12)) {
+        exit(3);
+    }
+    
     inputs_t *inputs = process_args(argc, argv);
     // print_inputs(inputs);
 
