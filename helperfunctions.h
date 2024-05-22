@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <netdb.h>
 
+#include "login.h"
 
 #define TAG_SIZE 5
 #define INBOX_LEN 5
@@ -15,7 +16,6 @@
 #define BUFFER_SIZE 1024
 #define FETCH_COMPLETED "OK Fetch completed"
 #define NULL_BYTE '\0'
-
 
 /* begin arguments processing here */
 #define MESSAGE_NOT_GIVEN -1

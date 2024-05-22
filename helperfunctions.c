@@ -96,7 +96,6 @@ inputs_t *process_args(int argc, char **argv)
 int validate_inputs(char *input)
 {
     /* checks if `input` is an injection */
-    
 }
 
 void print_inputs(inputs_t *inputs)
@@ -117,8 +116,8 @@ void print_inputs(inputs_t *inputs)
     if (inputs->command != NULL)
         printf("Command: %s, ", inputs->command);
 
-    if ((inputs->message_num) > MESSAGE_NOT_GIVEN)
-        printf("Number of messages: %d\n", inputs->message_num);
+    if ((inputs->message_num) != NULL)
+        printf("Number of messages: %s\n", inputs->message_num);
 }
 
 char *generate_tag()
@@ -148,11 +147,11 @@ char *get_fetch_line(int sockfd, char *completed_message)
     */
     char buffer[BUFFER_SIZE];
     memset(buffer, 0, BUFFER_SIZE);
-    
+
     char *output = (char *)malloc(sizeof(char) * BUFFER_SIZE);
     memset(output, 0, BUFFER_SIZE);
     assert(output);
-    
+
     int fetch_incomplete = FALSE;
     int bytes_received = 0;
 
@@ -161,7 +160,8 @@ char *get_fetch_line(int sockfd, char *completed_message)
     output[bytes_received] = '\0';
 
     /* check if we're at the end of the response */
-    if (strstr(output, completed_message) != NULL) fetch_incomplete = TRUE;
+    if (strstr(output, completed_message) != NULL)
+        fetch_incomplete = TRUE;
 
     /* get the rest of the response until `OK Fetch completed` found */
     while (fetch_incomplete == FALSE)
@@ -174,7 +174,7 @@ char *get_fetch_line(int sockfd, char *completed_message)
         output = add_buffer_to_output_string(output, buffer, bytes_received);
 
         /* check if we're at the end of the response */
-        if (strstr(output, completed_message) != NULL) 
+        if (strstr(output, completed_message) != NULL)
         {
             fetch_incomplete = TRUE;
             break;
