@@ -128,7 +128,7 @@ char *extract_content(int sockfd, char *tag, int message_num, char *header)
     if (content_present == 1)
     {
         curr_len = strlen(content);
-        content[--curr_len] = '\0';
+        content[curr_len - 2] = '\0'; // removing CR
         to_return = strdup(content);
     }
     else
