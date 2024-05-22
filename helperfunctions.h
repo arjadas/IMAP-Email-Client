@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <netdb.h>
 
+#include "login.h"
 
 #define TAG_SIZE 5
 #define INBOX_LEN 5
@@ -15,7 +16,6 @@
 #define BUFFER_SIZE 1024
 #define FETCH_COMPLETED "OK Fetch completed"
 #define NULL_BYTE '\0'
-
 
 /* begin arguments processing here */
 #define MESSAGE_NOT_GIVEN -1
@@ -44,7 +44,7 @@ typedef struct
 */
 inputs_t *process_args(int argc, char **argv);
 void print_inputs(inputs_t *inputs);
-int validate_inputs(char *input)
+int validate_inputs(char *input);
 
 /* end argument processing here */
 

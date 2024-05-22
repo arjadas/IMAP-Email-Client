@@ -4,7 +4,7 @@
 #include "login.h"
 #include "helperfunctions.h"
 
-void retrieve(int sockfd, char *tag, int message_num, char *folder_name);
+void retrieve(int sockfd, char *tag, char *message_num, char *folder_name);
 
 #endif
 

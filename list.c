@@ -4,17 +4,23 @@
 void list(int sockfd, char *tag, char *folder_name)
 {
     char buffer[BUFFER_SIZE];
+
+    int bytes_received = 1;
+
     /* new comms new tag */
     modify_tag(tag);
 
     /* fetch MIME-Version from server for email `message_num` */
     sprintf(buffer, "%s fetch 1:* (BODY[HEADER.FIELDS (Subject)]) \r\n", tag);
-    write(sockfd, buffer, strlen(buffer)); memset(buffer, 0, BUFFER_SIZE);
+    write(sockfd, buffer, strlen(buffer));
+    memset(buffer, 0, BUFFER_SIZE);
+
+    /*
     buffer[BUFFER_SIZE - 1] = '\0';
     char *server_reply = get_fetch_line(sockfd, FETCH_COMPLETED);
     assert(server_reply);
-    
-    /* output the subject headers */
+
+    // output the subject headers
     char *index = server_reply;
     char *temp = server_reply;
     char *output = NULL;
@@ -30,7 +36,15 @@ void list(int sockfd, char *tag, char *folder_name)
         index++;
         temp = index;
     }
-    
+    */
+
+    // receive response
+    while (bytes_received > 0)
+    {
+        bytes_received = read(sockfd, buffer, BUFFER_SIZE);
+        printf("%d\n", bytes_received);
+        printf("%s", buffer);
+    }
 }
 
 char *extract_message(char *input)
@@ -55,7 +69,10 @@ char *extract_message(char *input)
     if (subject != NULL)
     {
         /* find the content we want to add */
-        while ((*subject) != ' ') { subject++; }
+        while ((*subject) != ' ')
+        {
+            subject++;
+        }
         subject++;
 
         /* copy into the new array */
@@ -66,8 +83,8 @@ char *extract_message(char *input)
             /* fill array ADD UNFORLDING LOGIC HERE */
             output[i] = subject[i];
         }
-        output[i+1] = ')';
-        output[i+2] = NULL_BYTE;
+        output[i + 1] = ')';
+        output[i + 2] = NULL_BYTE;
     }
     else
     {
