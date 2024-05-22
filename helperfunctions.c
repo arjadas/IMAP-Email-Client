@@ -6,7 +6,7 @@ inputs_t *process_args(int argc, char **argv)
 {
     /*
         Structure of program run statement:
-        fetchmail-u <username> -p <password> [-f <folder>] [-n <messageNum>] [-t]<command> <server_name>
+        fetchmail -u <username> -p <password> [-f <folder>] [-n <messageNum>] [-t]<command> <server_name>
         Where <command> may be one of: retrieve, parse, mime, or list.
     */
 
@@ -109,13 +109,12 @@ inputs_t *process_args(int argc, char **argv)
     valid = validate_inputs(inputs);
     if (valid == FALSE)
     {
-        printf("\"");
+        fprintf(stderr, "\"");
         for (int i = 0; i < argc - 1; i++)
         {
-            printf("%s ", argv[i]);
+            fprintf(stderr, "%s ", argv[i]);
         }
-        printf("%s\"", argv[argc - 1]);
-        printf(" Failed -- Return Code: 3\n");
+        fprintf(stderr, "%s\"", argv[argc - 1]);
         exit(3);
     }
     if (injection(inputs) == FALSE)
