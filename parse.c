@@ -5,19 +5,19 @@ void parse(int sockfd, char *tag, int message_num)
     char *message;
 
     message = extract_content(sockfd, tag, message_num, "From");
-    printf("From: %s", message);
+    printf("From: %s\n", message);
 
     message = extract_content(sockfd, tag, message_num, "To");
     if (message != NULL)
-        printf("To: %s", message);
+        printf("To: %s\n", message);
     else
-        printf("%s", "");
+        printf("To:\n");
 
     message = extract_content(sockfd, tag, message_num, "Date");
-    printf("Date: %s", message);
+    printf("Date: %s\n", message);
 
     message = extract_content(sockfd, tag, message_num, "Subject");
-    printf("Subject: %s", message);
+    printf("Subject: %s\n", message);
 
     free(message);
 
@@ -82,7 +82,7 @@ char *extract_content(int sockfd, char *tag, int message_num, char *header)
                 is_body = 0;
                 body_end = 1;
                 // remove CR
-                content[--curr_len] = '\0';
+                // content[--curr_len] = '\0';
                 break;
             }
             else
@@ -92,7 +92,7 @@ char *extract_content(int sockfd, char *tag, int message_num, char *header)
                 content[--curr_len] = '\0';
                 content[--curr_len] = '\0';
                 // remove CR
-                content[--curr_len] = '\0';
+                // content[--curr_len] = '\0';
 
                 strcat(content, line);
             }
@@ -117,7 +117,7 @@ char *extract_content(int sockfd, char *tag, int message_num, char *header)
             content[--curr_len] = '\0';
             content[--curr_len] = '\0';
             // remove CR
-            content[--curr_len] = '\0';
+            // content[--curr_len] = '\0';
 
             strcat(content, buffer);
         }
@@ -127,6 +127,8 @@ char *extract_content(int sockfd, char *tag, int message_num, char *header)
 
     if (content_present == 1)
     {
+        curr_len = strlen(content);
+        content[--curr_len] = '\0';
         to_return = strdup(content);
     }
     else
