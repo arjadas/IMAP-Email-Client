@@ -44,7 +44,7 @@ typedef struct
 */
 inputs_t *process_args(int argc, char **argv);
 void print_inputs(inputs_t *inputs);
-int validate_inputs(char *input);
+void validate_inputs(inputs_t *inputs);
 
 /* end argument processing here */
 

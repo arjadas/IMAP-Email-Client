@@ -9,10 +9,9 @@ inputs_t *process_args(int argc, char **argv)
         fetchmail-u <username> -p <password> [-f <folder>] [-n <messageNum>] [-t]<command> <server_name>
         Where <command> may be one of: retrieve, parse, mime, or list.
     */
-   
+
     /* first check we have enough arguments */
     if ((argc < 7) || (argc > 12)) {
-        printf("Incorrect number of arguments. \n");
         exit(3);
     }
 
@@ -95,13 +94,20 @@ inputs_t *process_args(int argc, char **argv)
         }
         inputs->folder[i++] = '\0';
     }
+    validate_inputs(inputs);
 
     return inputs;
 }
 
-int validate_inputs(char *input)
+void validate_inputs(inputs_t *inputs)
 {
-    /* checks if `input` is an injection */
+    char error_message[] = "Incorrect command line arguments";
+
+    /* checks if `inputs` is an injection */
+    if (inputs->username == NULL) {printf("%s\n", error_message); exit(3);}
+    if (inputs->password == NULL) {printf("%s\n", error_message); exit(3);}
+    if (inputs->command == NULL) {printf("%s\n", error_message); exit(3);}
+    if (inputs->server_name == NULL) {printf("%s\n", error_message); exit(3);}
 }
 
 void print_inputs(inputs_t *inputs)
