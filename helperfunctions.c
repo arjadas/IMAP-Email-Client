@@ -11,7 +11,8 @@ inputs_t *process_args(int argc, char **argv)
     */
 
     /* first check we have enough arguments */
-    if ((argc < 7) || (argc > 12)) {
+    if ((argc < 7) || (argc > 12))
+    {
         printf("\"");
         for (int i = 0; i < argc - 1; i++)
         {
@@ -21,7 +22,6 @@ inputs_t *process_args(int argc, char **argv)
         printf(" Failed -- Return Code: 3\n");
         exit(3);
     }
-
 
     /* make an inputs_t struct */
     inputs_t *inputs = NULL;
@@ -104,7 +104,7 @@ inputs_t *process_args(int argc, char **argv)
         }
         inputs->folder[i++] = '\0';
     }
-    
+
     int valid = TRUE;
     valid = validate_inputs(inputs);
     if (valid == FALSE)
@@ -118,21 +118,22 @@ inputs_t *process_args(int argc, char **argv)
         printf(" Failed -- Return Code: 3\n");
         exit(3);
     }
-    if (injection(inputs) == FALSE)
+    /*if (injection(inputs) == FALSE)
     {
         printf("\n");
-    }
+    }*/
     return inputs;
 }
 
 int is_seqnum(char *message_num)
 {
-    if (message_num == NULL) return TRUE;
+    if (message_num == NULL)
+        return TRUE;
 
     int length = strlen(message_num);
     if (length == 1)
     {
-        if ( (isdigit(message_num[0])) == FALSE)
+        if ((isdigit(message_num[0])) == FALSE)
         {
             return FALSE;
         }
@@ -141,12 +142,12 @@ int is_seqnum(char *message_num)
 
     for (int i = 0; i < (length - 1); i++)
     {
-        if ( isdigit(message_num[i]) == FALSE )
+        if (isdigit(message_num[i]) == FALSE)
         {
             return FALSE;
         }
     }
-    if ( (isdigit(message_num[length - 1])) == FALSE || (message_num[length - 1] != '*'))
+    if ((isdigit(message_num[length - 1])) == FALSE || (message_num[length - 1] != '*'))
     {
         return FALSE;
     }
@@ -156,11 +157,16 @@ int is_seqnum(char *message_num)
 int validate_inputs(inputs_t *inputs)
 {
     /* checks if `inputs` is an injection */
-    if (inputs->username == NULL) return FALSE;
-    if (inputs->password == NULL) return FALSE;
-    if (inputs->command == NULL) return FALSE;
-    if (inputs->server_name == NULL) return FALSE;
-    if (is_seqnum(inputs->message_num) == FALSE) return FALSE;
+    if (inputs->username == NULL)
+        return FALSE;
+    if (inputs->password == NULL)
+        return FALSE;
+    if (inputs->command == NULL)
+        return FALSE;
+    if (inputs->server_name == NULL)
+        return FALSE;
+    if (is_seqnum(inputs->message_num) == FALSE)
+        return FALSE;
 
     return TRUE;
 }
@@ -172,11 +178,16 @@ int injection(inputs_t *inputs)
     // if (strstr(inputs->command, "LOGIN") != NULL) return FALSE;
     // if (strstr(inputs->server_name, "LOGIN") != NULL) return FALSE;
     // if (strstr(inputs->message_num, "LOGIN") != NULL) return FALSE;
-    if (strstr(inputs->username, "\r\n") != NULL) return FALSE;
-    if (strstr(inputs->password, "\r\n") != NULL) return FALSE;
-    if (strstr(inputs->command, "\r\n") != NULL) return FALSE;
-    if (strstr(inputs->server_name, "\r\n") != NULL) return FALSE;
-    if (strstr(inputs->message_num, "\r\n") != NULL) return FALSE;
+    if (strstr(inputs->username, "\r\n") != NULL)
+        return FALSE;
+    if (strstr(inputs->password, "\r\n") != NULL)
+        return FALSE;
+    if (strstr(inputs->command, "\r\n") != NULL)
+        return FALSE;
+    if (strstr(inputs->server_name, "\r\n") != NULL)
+        return FALSE;
+    if (strstr(inputs->message_num, "\r\n") != NULL)
+        return FALSE;
 
     return TRUE;
 }
