@@ -19,8 +19,8 @@ inputs_t *process_args(int argc, char **argv)
             printf("%s ", argv[i]);
         }
         printf("%s\"", argv[argc - 1]);
-        printf(" Failed -- Return Code: 3\n");
-        exit(3);
+        printf(" Incorrect number of inputs\n");
+        exit(1);
     }
 
     /* make an inputs_t struct */
@@ -104,17 +104,18 @@ inputs_t *process_args(int argc, char **argv)
         }
         inputs->folder[i++] = '\0';
     }
+    // printf("%s \n%s \n%s \n%s \n%s \n %s\n", inputs->command, inputs->username, inputs->password, inputs->folder, inputs->message_num, inputs->server_name);
 
     int valid = TRUE;
     valid = validate_inputs(inputs);
     if (valid == FALSE)
     {
-        printf("Incorrect inputs. Make sure to enter enough arguments of the correct type.\n");
+        printf(" Incorrect inputs. Make sure to enter enough arguments of the correct type.\n");
         exit(1);
     }
     if (injection(inputs) == FALSE)
     {
-        printf("You've attempted injection! Try again with valid input.\n");
+        printf(" You've attempted injection! Try again with valid input.\n");
         exit(1);
     }
     return inputs;
