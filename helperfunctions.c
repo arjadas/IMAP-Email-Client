@@ -109,13 +109,11 @@ inputs_t *process_args(int argc, char **argv)
     valid = validate_inputs(inputs);
     if (valid == FALSE)
     {
-        // fprintf(stderr, "Failed -- Return Code: 3\n");
         printf("Incorrect inputs. Make sure to enter enough arguments of the correct type.\n");
         exit(1);
     }
     if (injection(inputs) == FALSE)
     {
-        // fprintf(stderr, "Failed, due to injection\n");
         printf("You've attempted injection! Try again with valid input.\n");
         exit(1);
     }
@@ -144,7 +142,7 @@ int is_seqnum(char *message_num)
             return FALSE;
         }
     }
-    if ((isdigit(message_num[length - 1])) == FALSE || (message_num[length - 1] != '*'))
+    if ((isdigit(message_num[length - 1])) == FALSE || (message_num[length - 1] == '*'))
     {
         return FALSE;
     }
@@ -155,26 +153,50 @@ int validate_inputs(inputs_t *inputs)
 {
     /* checks if `inputs` is an invalid */
     if ((inputs->username == NULL))
+    {
+        printf("line 156\n");
         return FALSE;
+    }
     if ((inputs->password == NULL))
+    {
+        printf("line 159\n");
         return FALSE;
+    }
     if ((inputs->command == NULL) )
+    {
+        printf("line 162\n");
         return FALSE;
+    }
     if ((inputs->server_name == NULL))
+    {
+        printf("line 165\n");
         return FALSE;
-
+    }
     if ((is_seqnum(inputs->message_num)) == FALSE)
+    {
+        printf("line 169\n");
         return FALSE;
-        
+    }    
     if ((inputs->username != NULL) && check_characters(inputs->username) == FALSE)
+    {
+        printf("line 173\n");
         return FALSE;
+    }
     if ((inputs->password != NULL) && check_characters(inputs->password) == FALSE)
+    {
+        printf("line 176\n");
         return FALSE;
+    }
     if ((inputs->command != NULL) && check_characters(inputs->command) == FALSE)
+    {
+        printf("line 179\n");
         return FALSE;
+    }
     if ((inputs->server_name != NULL) && check_characters(inputs->server_name) == FALSE)
+    {
+        printf("line 182\n");
         return FALSE;
-
+    }
     return TRUE;
 }
 
