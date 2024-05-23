@@ -58,5 +58,6 @@ void modify_tag(char *tag);
 /* for getting server response for MIME and LIST */
 char *get_fetch_line(int sockfd, char *completed_message);
 char *add_buffer_to_output_string(char *output, char *buffer, int bytes_received);
+void free_input(inputs_t *inputs);
 
 #endif

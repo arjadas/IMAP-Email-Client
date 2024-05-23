@@ -135,7 +135,7 @@ int is_seqnum(char *message_num)
         {
             return TRUE;
         }
-        
+
         num = (int)message_num[0];
         if ((isdigit(num) == FALSE))
         {
@@ -178,7 +178,7 @@ int validate_inputs(inputs_t *inputs)
         // printf("line 159\n");
         return FALSE;
     }
-    if ((inputs->command == NULL) )
+    if ((inputs->command == NULL))
     {
         // printf("line 162\n");
         return FALSE;
@@ -192,7 +192,7 @@ int validate_inputs(inputs_t *inputs)
     {
         // printf("line 169\n");
         return FALSE;
-    }    
+    }
     if ((inputs->username != NULL) && check_characters(inputs->username) == FALSE)
     {
         // printf("line 173\n");
@@ -223,15 +223,16 @@ int check_characters(char *string)
     {
         return TRUE;
     }
-    if ((strlen(string) == 1) && (isspace(string[0]) != FALSE)) return FALSE;
+    if ((strlen(string) == 1) && (isspace(string[0]) != FALSE))
+        return FALSE;
     for (int i = 0; i < strlen(string); i++)
     {
         if (isspace(string[i]) != FALSE)
         {
             return FALSE;
         }
-        if (string[i] == '(' || string[i] == ')' || 
-            string[i] == '{' || string[i] == '%' || 
+        if (string[i] == '(' || string[i] == ')' ||
+            string[i] == '{' || string[i] == '%' ||
             string[i] == '*' || string[i] == ']')
         {
             return FALSE;
@@ -361,4 +362,15 @@ char *add_buffer_to_output_string(char *output, char *buffer, int bytes_received
     strcat(output, buffer);
     assert(output);
     return output;
+}
+
+void free_input(inputs_t *inputs)
+{
+    free(inputs->command);
+    free(inputs->username);
+    free(inputs->password);
+    free(inputs->folder);
+    free(inputs->message_num);
+    free(inputs->server_name);
+    free(inputs);
 }
