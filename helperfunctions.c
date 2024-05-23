@@ -111,13 +111,13 @@ inputs_t *process_args(int argc, char **argv)
     {
         // fprintf(stderr, "Failed -- Return Code: 3\n");
         printf("Incorrect inputs. Make sure to enter enough arguments of the correct type.\n");
-        exit(3);
+        exit(1);
     }
     if (injection(inputs) == FALSE)
     {
         // fprintf(stderr, "Failed, due to injection\n");
         printf("You've attempted injection! Try again with valid input.\n");
-        exit(3);
+        exit(1);
     }
     return inputs;
 }
