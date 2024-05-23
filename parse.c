@@ -4,19 +4,26 @@ void parse(int sockfd, char *tag, char *message_num)
 {
     char *message;
 
-    message = extract_content_parse(sockfd, tag, message_num, "From");
+    int sockfd_clone = dup(sockfd);
+    message = extract_content_parse(sockfd_clone, tag, message_num, "From");
     printf("From: %s\n", message);
+    free(message);
 
-    message = extract_content_parse(sockfd, tag, message_num, "To");
+    sockfd_clone = dup(sockfd);
+    message = extract_content_parse(sockfd_clone, tag, message_num, "To");
     if (message != NULL)
         printf("To: %s\n", message);
     else
         printf("To:\n");
+    free(message);
 
-    message = extract_content_parse(sockfd, tag, message_num, "Date");
+    sockfd_clone = dup(sockfd);
+    message = extract_content_parse(sockfd_clone, tag, message_num, "Date");
     printf("Date: %s\n", message);
+    free(message);
 
-    message = extract_content_parse(sockfd, tag, message_num, "Subject");
+    sockfd_clone = dup(sockfd);
+    message = extract_content_parse(sockfd_clone, tag, message_num, "Subject");
     printf("Subject: %s\n", message);
 
     free(message);
@@ -108,8 +115,6 @@ char *extract_content_parse(int sockfd, char *tag, char *message_num, char *head
         memset(buffer, 0, BUFFER_SIZE); // resetting the buffer
     }
 
-    fclose(file); // closing the file after finishing reading
-
     if (content_present == 1)
     {
         to_return = strdup(content);
@@ -125,6 +130,8 @@ char *extract_content_parse(int sockfd, char *tag, char *message_num, char *head
             to_return = NULL;
         }
     }
+
+    fclose(file);
 
     return to_return;
 }
