@@ -95,16 +95,8 @@ inputs_t *process_args(int argc, char **argv)
     {
         /* set to INBOX */
         char inbox[] = "INBOX";
-        inputs->folder = (char *)malloc(sizeof(char) * (INBOX_LEN + 1));
-        assert(inputs->folder);
-        int i = 0;
-        for (i = 0; i < INBOX_LEN; i++)
-        {
-            inputs->folder[i] = inbox[i];
-        }
-        inputs->folder[i++] = '\0';
+        inputs->folder = strdup(inbox);
     }
-    // printf("%s \n%s \n%s \n%s \n%s \n %s\n", inputs->command, inputs->username, inputs->password, inputs->folder, inputs->message_num, inputs->server_name);
 
     int valid = TRUE;
     valid = validate_inputs(inputs);
@@ -170,47 +162,38 @@ int validate_inputs(inputs_t *inputs)
     /* checks if `inputs` is an invalid */
     if ((inputs->username == NULL))
     {
-        // printf("line 156\n");
         return FALSE;
     }
     if ((inputs->password == NULL))
     {
-        // printf("line 159\n");
         return FALSE;
     }
     if ((inputs->command == NULL) )
     {
-        // printf("line 162\n");
         return FALSE;
     }
     if ((inputs->server_name == NULL))
     {
-        // printf("line 165\n");
         return FALSE;
     }
     if ((is_seqnum(inputs->message_num)) == FALSE)
     {
-        // printf("line 169\n");
         return FALSE;
     }    
     if ((inputs->username != NULL) && check_characters(inputs->username) == FALSE)
     {
-        // printf("line 173\n");
         return FALSE;
     }
     if ((inputs->password != NULL) && check_characters(inputs->password) == FALSE)
     {
-        // printf("line 176\n");
         return FALSE;
     }
     if ((inputs->command != NULL) && check_characters(inputs->command) == FALSE)
     {
-        // printf("line 179\n");
         return FALSE;
     }
     if ((inputs->server_name != NULL) && check_characters(inputs->server_name) == FALSE)
     {
-        // printf("line 182\n");
         return FALSE;
     }
     return TRUE;
@@ -226,10 +209,6 @@ int check_characters(char *string)
     if ((strlen(string) == 1) && (isspace(string[0]) != FALSE)) return FALSE;
     for (int i = 0; i < strlen(string); i++)
     {
-        if (isspace(string[i]) != FALSE)
-        {
-            return FALSE;
-        }
         if (string[i] == '(' || string[i] == ')' || 
             string[i] == '{' || string[i] == '%' || 
             string[i] == '*' || string[i] == ']')
