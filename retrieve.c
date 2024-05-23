@@ -70,5 +70,8 @@ void retrieve(int sockfd, char *tag, char *message_num, char *folder_name)
 
         memset(buffer, 0, BUFFER_SIZE); // resetting the buffer
     }
+
+    fclose(file); // closing the file after finishing reading
+
     exit(0);
 }

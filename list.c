@@ -7,6 +7,8 @@ void list(int sockfd, char *tag, char *folder_name)
 
     message = extract_content_list(sockfd, tag, "1:*", "Subject");
     printf("%s", message);
+
+    free(message);
 }
 
 char *extract_content_list(int sockfd, char *tag, char *message_num, char *header)
@@ -128,6 +130,8 @@ char *extract_content_list(int sockfd, char *tag, char *message_num, char *heade
 
         memset(buffer, 0, BUFFER_SIZE); // resetting the buffer
     }
+
+    fclose(file); // closing the file after finishing reading
 
     to_return = strdup(content);
     return to_return;

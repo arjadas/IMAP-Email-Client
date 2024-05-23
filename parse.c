@@ -108,6 +108,8 @@ char *extract_content_parse(int sockfd, char *tag, char *message_num, char *head
         memset(buffer, 0, BUFFER_SIZE); // resetting the buffer
     }
 
+    fclose(file); // closing the file after finishing reading
+
     if (content_present == 1)
     {
         to_return = strdup(content);
