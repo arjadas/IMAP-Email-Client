@@ -125,11 +125,20 @@ int is_seqnum(char *message_num)
     if (message_num == NULL)
         return TRUE;
 
+    int num = 0;
     int length = strlen(message_num);
     if (length == 1)
     {
-        if (((isdigit(message_num[0])) == FALSE) || (message_num[0] != '*'))
+
+        if (message_num[0] == '*')
         {
+            return TRUE;
+        }
+        
+        num = (int)message_num[0];
+        if ((isdigit(num) == FALSE))
+        {
+            printf("num = %c\n", message_num[0]);
             printf("Incorrect messageNum. Make sure you only include digits or `*`.\n");
             exit(1);
         }
@@ -138,14 +147,15 @@ int is_seqnum(char *message_num)
 
     for (int i = 0; i < (length - 1); i++)
     {
-        if (isdigit(message_num[i]) == FALSE)
+        num = (int)message_num[i];
+        if (isdigit((int)message_num[i]) == FALSE)
         {
             printf("Incorrect messageNum. Make sure you only include digits.\n");
             exit(1);
             return FALSE;
         }
     }
-    if ((isdigit(message_num[length - 1])) == FALSE)
+    if ((isdigit((int)message_num[length - 1])) == FALSE)
     {
         printf("Incorrect messageNum. Make sure you only include digits.\n");
         exit(1);
