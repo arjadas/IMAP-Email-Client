@@ -147,18 +147,6 @@ int is_seqnum(char *message_num)
     return TRUE;
 }
 
-// int validate_argv(int argc, char **argv)
-// {
-//     int j = 0;
-//     for (int i = 0; i < argc; i++)
-//     {
-//         while (argv[i][j] != NULL_BYTE)
-//         {
-//             if (isspace(argv[i][j]) != FALSE) re
-//         }
-//     }
-// }
-
 int validate_inputs(inputs_t *inputs)
 {
     /* checks if `inputs` is an invalid */
@@ -170,9 +158,43 @@ int validate_inputs(inputs_t *inputs)
         return FALSE;
     if ((inputs->server_name == NULL))
         return FALSE;
+
     if ((is_seqnum(inputs->message_num)) == FALSE)
         return FALSE;
+        
+    if ((inputs->username != NULL) && check_characters(inputs->username) == FALSE)
+        return FALSE;
+    if ((inputs->password != NULL) && check_characters(inputs->password) == FALSE)
+        return FALSE;
+    if ((inputs->command != NULL) && check_characters(inputs->command) == FALSE)
+        return FALSE;
+    if ((inputs->server_name != NULL) && check_characters(inputs->server_name) == FALSE)
+        return FALSE;
 
+    return TRUE;
+}
+
+int check_characters(char *string)
+{
+    /* check for bad charcaters */
+    if (string == NULL)
+    {
+        return TRUE;
+    }
+    if ((strlen(string) == 1) && (isspace(string[0]) != FALSE)) return FALSE;
+    for (int i = 0; i < strlen(string); i++)
+    {
+        if (isspace(string[i]) != FALSE)
+        {
+            return FALSE;
+        }
+        if (string[i] == '(' || string[i] == ')' || 
+            string[i] == '{' || string[i] == '%' || 
+            string[i] == '*' || string[i] == ']')
+        {
+            return FALSE;
+        }
+    }
     return TRUE;
 }
 

@@ -46,6 +46,7 @@ typedef struct
 inputs_t *process_args(int argc, char **argv);
 void print_inputs(inputs_t *inputs);
 int validate_inputs(inputs_t *inputs);
+int check_characters(char *string);
 int is_seqnum(char *message_num);
 int injection(inputs_t *inputs);
 
