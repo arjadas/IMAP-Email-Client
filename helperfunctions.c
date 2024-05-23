@@ -110,10 +110,12 @@ inputs_t *process_args(int argc, char **argv)
     if (valid == FALSE)
     {
         fprintf(stderr, "Failed -- Return Code: 3\n");
+        exit(3);
     }
     if (injection(inputs) == FALSE)
     {
         fprintf(stderr, "Failed, due to injection\n");
+        exit(3);
     }
     return inputs;
 }
