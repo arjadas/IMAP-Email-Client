@@ -15,6 +15,7 @@ void mime(int sockfd, char *tag, inputs_t *inputs)
     {
         if ( !(isdigit((int)input_message_num[i])) ){
             free_input(inputs);
+            free(tag);
             fprintf(stderr, "Invalid input for messageNum. Insert a number instead.\n");
             exit(1);
         }
@@ -29,6 +30,7 @@ void mime(int sockfd, char *tag, inputs_t *inputs)
     if ( !(match_mime_version(sockfd, tag, message_num, folder_name)) ) 
     {
         free_input(inputs);
+        free(tag);
         printf("Header is not match the MIME-Version requirement.\n");
         exit(4);
     }
@@ -37,6 +39,7 @@ void mime(int sockfd, char *tag, inputs_t *inputs)
     if ( !(match_content_type(sockfd, tag, message_num, folder_name)) ) 
     {
         free_input(inputs);
+        free(tag);
         printf("Header is not match the Content-Type requirement.\n");
         exit(4);
     }
@@ -45,6 +48,7 @@ void mime(int sockfd, char *tag, inputs_t *inputs)
     if ( !((body_part = get_body_part(sockfd, tag, message_num, folder_name))) ) 
     {
         free_input(inputs);
+        free(tag);
         printf("Header is either not match the Type/ Subtype or encoding requirement.\n");
         exit(4);
     }
