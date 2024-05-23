@@ -5,9 +5,7 @@
 #include "helperfunctions.h"
 #include "parse.h"
 
-#define STATUS_COMPLETED
-
-void list(int sockfd, char *tag, char *folder_name);
+void list(int sockfd, char *tag);
 char *extract_content_list(int sockfd, char *tag, char *message_num, char *header);
 
 #endif

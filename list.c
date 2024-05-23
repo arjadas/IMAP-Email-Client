@@ -1,7 +1,7 @@
 #include "list.h"
 #include "helperfunctions.h"
 
-void list(int sockfd, char *tag, char *folder_name)
+void list(int sockfd, char *tag)
 {
     char *message;
 
@@ -74,11 +74,6 @@ char *extract_content_list(int sockfd, char *tag, char *message_num, char *heade
                 subject_read = 0;
                 continue;
             }
-        }
-        else if (strstr(buffer, "BAD Error"))
-        {
-            printf("Message not found\n");
-            exit(3);
         }
 
         if ((is_body == 1) && is_alphanumeric(buffer) != 0 && content_present == 0)

@@ -1,6 +1,6 @@
 #include "retrieve.h"
 
-void retrieve(int sockfd, char *tag, char *message_num, char *folder_name)
+void retrieve(int sockfd, char *tag, inputs_t *inputs)
 {
     char buffer[BUFFER_SIZE];
     char temp[BUFFER_SIZE];
@@ -10,9 +10,9 @@ void retrieve(int sockfd, char *tag, char *message_num, char *folder_name)
 
     modify_tag(tag);
 
-    if (message_num != NULL)
+    if (inputs->message_num != NULL)
     {
-        sprintf(buffer, "%s FETCH %s BODY.PEEK[]\r\n", tag, message_num);
+        sprintf(buffer, "%s FETCH %s BODY.PEEK[]\r\n", tag, inputs->message_num);
     }
     else
     { // get the last recent message
@@ -60,6 +60,8 @@ void retrieve(int sockfd, char *tag, char *message_num, char *folder_name)
         else if (strstr(buffer, "BAD Error"))
         {
             printf("Message not found\n");
+            free(tag);
+            free_input(inputs);
             exit(3);
         }
 
@@ -72,6 +74,4 @@ void retrieve(int sockfd, char *tag, char *message_num, char *folder_name)
     }
 
     fclose(file); // closing the file after finishing reading
-
-    exit(0);
 }

@@ -16,7 +16,7 @@ int main(int argc, char **argv)
     inputs_t *inputs = process_args(argc, argv);
 
     // establish connection to the server
-    int sockfd = connect_to_server(inputs->server_name);
+    int sockfd = connect_to_server(inputs);
     if (sockfd == -1)
     {
         fprintf(stderr, "Failed to connect to server\n");
@@ -26,19 +26,19 @@ int main(int argc, char **argv)
     char *tag = generate_tag();
 
     // logging in
-    login(sockfd, tag, inputs->username, inputs->password);
+    login(sockfd, tag, inputs);
 
     // select the folder
-    select_folder(sockfd, tag, inputs->folder);
+    select_folder(sockfd, tag, inputs);
 
     // run function depending on command
     if (strcmp(inputs->command, "retrieve") == 0)
     {
-        retrieve(sockfd, tag, inputs->message_num, inputs->folder);
+        retrieve(sockfd, tag, inputs);
     }
     else if (strcmp(inputs->command, "parse") == 0)
     {
-        parse(sockfd, tag, inputs->message_num);
+        parse(sockfd, tag, inputs);
     }
     else if (strcmp(inputs->command, "mime") == 0)
     {
@@ -46,19 +46,13 @@ int main(int argc, char **argv)
     }
     else if (strcmp(inputs->command, "list") == 0)
     {
-        list(sockfd, tag, inputs->folder);
+        list(sockfd, tag);
     }
 
     close(sockfd); // closing the socket at end
 
     free(tag);
-    free(inputs->command);
-    free(inputs->username);
-    free(inputs->password);
-    free(inputs->folder);
-    free(inputs->message_num);
-    free(inputs->server_name);
-    free(inputs);
+    free_input(inputs);
 
     return 0;
 }

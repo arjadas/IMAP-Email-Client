@@ -2,7 +2,7 @@
 #include "helperfunctions.h"
 
 // function to establish a socket and connect to the server
-int connect_to_server(char *server_name)
+int connect_to_server(inputs_t *inputs)
 {
     int sockfd, status;
     /*
@@ -14,7 +14,7 @@ int connect_to_server(char *server_name)
     hints.ai_family = AF_UNSPEC;      // allowing IPv4 or IPv6
     hints.ai_socktype = SOCK_STREAM;  // setting the type of connection, in this case - TCP socket
 
-    status = getaddrinfo(server_name, SERVER_PORT, &hints, &servinfo);
+    status = getaddrinfo(inputs->server_name, SERVER_PORT, &hints, &servinfo);
 
     /* getaddrinfo() returns a list of address structures.
               Try each address until we successfully connect(2).
@@ -24,6 +24,7 @@ int connect_to_server(char *server_name)
     if (status != 0)
     {
         fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(status));
+        free_input(inputs);
         exit(EXIT_FAILURE);
     }
 
@@ -54,6 +55,7 @@ int connect_to_server(char *server_name)
     if (rp == NULL)
     {
         fprintf(stderr, "client: failed to connect\n");
+        free_input(inputs);
         exit(EXIT_FAILURE);
     }
 
@@ -63,7 +65,7 @@ int connect_to_server(char *server_name)
 }
 
 // function to login to the IMAP server
-void login(int sockfd, char *tag, char *username, char *password)
+void login(int sockfd, char *tag, inputs_t *inputs)
 {
     char buffer[BUFFER_SIZE];
 
@@ -74,7 +76,7 @@ void login(int sockfd, char *tag, char *username, char *password)
     memset(buffer, 0, BUFFER_SIZE);
 
     // loggin in to the IMAP server
-    sprintf(buffer, "%s LOGIN %s %s\r\n", tag, username, password);
+    sprintf(buffer, "%s LOGIN %s %s\r\n", tag, inputs->username, inputs->password);
     write(sockfd, buffer, strlen(buffer));
 
     memset(buffer, 0, BUFFER_SIZE);
@@ -86,19 +88,21 @@ void login(int sockfd, char *tag, char *username, char *password)
     if (strstr(buffer, "OK") == NULL) // is it better to convert response to lower case and compare or compare twice OK & ok?
     {
         printf("Login failure\n");
+        free(tag);
+        free_input(inputs);
         exit(3);
     }
 }
 
 // function to select a folder
-void select_folder(int sockfd, char *tag, char *folder_name)
+void select_folder(int sockfd, char *tag, inputs_t *inputs)
 {
     char buffer[BUFFER_SIZE];
 
     modify_tag(tag);
 
     // tell the system which folder to read from
-    sprintf(buffer, "%s SELECT \"%s\"\r\n", tag, folder_name);
+    sprintf(buffer, "%s SELECT \"%s\"\r\n", tag, inputs->folder);
     write(sockfd, buffer, strlen(buffer));
 
     memset(buffer, 0, BUFFER_SIZE);
@@ -110,6 +114,8 @@ void select_folder(int sockfd, char *tag, char *folder_name)
     if (strstr(buffer, "OK") == NULL)
     {
         printf("Folder not found\n");
+        free(tag);
+        free_input(inputs);
         exit(3);
     }
 }

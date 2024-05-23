@@ -1,16 +1,16 @@
 #include "parse.h"
 
-void parse(int sockfd, char *tag, char *message_num)
+void parse(int sockfd, char *tag, inputs_t *inputs)
 {
     char *message;
 
     int sockfd_clone = dup(sockfd);
-    message = extract_content_parse(sockfd_clone, tag, message_num, "From");
+    message = extract_content_parse(sockfd_clone, tag, inputs, "From");
     printf("From: %s\n", message);
     free(message);
 
     sockfd_clone = dup(sockfd);
-    message = extract_content_parse(sockfd_clone, tag, message_num, "To");
+    message = extract_content_parse(sockfd_clone, tag, inputs, "To");
     if (message != NULL)
         printf("To: %s\n", message);
     else
@@ -18,20 +18,18 @@ void parse(int sockfd, char *tag, char *message_num)
     free(message);
 
     sockfd_clone = dup(sockfd);
-    message = extract_content_parse(sockfd_clone, tag, message_num, "Date");
+    message = extract_content_parse(sockfd_clone, tag, inputs, "Date");
     printf("Date: %s\n", message);
     free(message);
 
     sockfd_clone = dup(sockfd);
-    message = extract_content_parse(sockfd_clone, tag, message_num, "Subject");
+    message = extract_content_parse(sockfd_clone, tag, inputs, "Subject");
     printf("Subject: %s\n", message);
 
     free(message);
-
-    exit(0);
 }
 
-char *extract_content_parse(int sockfd, char *tag, char *message_num, char *header)
+char *extract_content_parse(int sockfd, char *tag, inputs_t *inputs, char *header)
 {
     char buffer[BUFFER_SIZE] = {'\0'};
     char end_message_ok[BUFFER_SIZE];
@@ -43,9 +41,9 @@ char *extract_content_parse(int sockfd, char *tag, char *message_num, char *head
 
     modify_tag(tag);
 
-    if (message_num != NULL)
+    if (inputs->message_num != NULL)
     {
-        sprintf(buffer, "%s FETCH %s BODY.PEEK[HEADER.FIELDS (%s)]\r\n", tag, message_num, header);
+        sprintf(buffer, "%s FETCH %s BODY.PEEK[HEADER.FIELDS (%s)]\r\n", tag, inputs->message_num, header);
     }
     else
     { // get the last recent message
@@ -53,7 +51,7 @@ char *extract_content_parse(int sockfd, char *tag, char *message_num, char *head
     }
 
     write(sockfd, buffer, strlen(buffer));
-    
+
     FILE *file = fdopen(sockfd, "r");
     assert(file);
 
@@ -88,6 +86,8 @@ char *extract_content_parse(int sockfd, char *tag, char *message_num, char *head
         else if (strstr(buffer, "BAD Error"))
         {
             printf("Message not found\n");
+            free(tag);
+            free_input(inputs);
             exit(3);
         }
 
@@ -138,7 +138,7 @@ char *extract_content_parse(int sockfd, char *tag, char *message_num, char *head
 
 void remove_header(char message[BUFFER_SIZE], char *header)
 {
-    char temp[1024] = {'\0'};
+    char temp[BUFFER_SIZE] = {'\0'};
 
     strcpy(temp, message + strlen(header) + 2); // +2 because of a colon and space after the header
     memset(message, 0, BUFFER_SIZE);

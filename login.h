@@ -11,8 +11,10 @@
 #include <string.h>
 #include <assert.h>
 
-int connect_to_server(char *server_name);
-void login(int sockfd, char *tag, char *username, char *password);
-void select_folder(int sockfd, char *tag, char *folder_name);
+#include "helperfunctions.h"
+
+int connect_to_server(inputs_t *inputs);
+void login(int sockfd, char *tag, inputs_t *inputs);
+void select_folder(int sockfd, char *tag, inputs_t *inputs);
 
 #endif
