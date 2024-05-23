@@ -53,7 +53,7 @@ char *extract_content_parse(int sockfd, char *tag, char *message_num, char *head
     }
 
     write(sockfd, buffer, strlen(buffer));
-
+    
     FILE *file = fdopen(sockfd, "r");
     assert(file);
 
