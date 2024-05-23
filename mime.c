@@ -1,29 +1,34 @@
 #include "mime.h"
 
-void mime(int sockfd, char *tag, char *input_message_num, char *folder_name)
+/*
+    function to decode mime messages:
+        the goal here is to decode MIME messages. the general idea is as follows:
+        1. FETCH MIME-Version and Content-Type headers so we can check for a match
+        2. Check for correct type/subtype and charset, etc.
+        3. Get email if we have matches
+*/
+void mime(int sockfd, char *tag, inputs_t *inputs)
 {
-    /*
-        function to decode mime messages:
-            the goal here is to decode MIME messages. the general idea is as follows:
-            1. FETCH MIME-Version and Content-Type headers so we can check for a match
-            2a. If matched: Findcharset=UTF-8 block
-            2b. If not matched: print error message and exit with status 4
-    */
     /* first extract the values from `message` num */
+    char *input_message_num = inputs->message_num;
     for (int i = 0; input_message_num[i] != NULL_BYTE; i++)
     {
         if ( !(isdigit((int)input_message_num[i])) ){
+            free_input(inputs);
             fprintf(stderr, "Invalid input for messageNum. Insert a number instead.\n");
             exit(1);
         }
     }
     int message_num = atoi(input_message_num);
 
+    char *folder_name = inputs->folder;
+
     int body_part = -1;
 
     /* step 1a: check for MIME-Version */
     if ( !(match_mime_version(sockfd, tag, message_num, folder_name)) ) 
     {
+        free_input(inputs);
         printf("Header is not match the MIME-Version requirement.\n");
         exit(4);
     }
@@ -31,6 +36,7 @@ void mime(int sockfd, char *tag, char *input_message_num, char *folder_name)
     /* step 1b: check for Content-Type */
     if ( !(match_content_type(sockfd, tag, message_num, folder_name)) ) 
     {
+        free_input(inputs);
         printf("Header is not match the Content-Type requirement.\n");
         exit(4);
     }
@@ -38,6 +44,7 @@ void mime(int sockfd, char *tag, char *input_message_num, char *folder_name)
     /* step 2: get BODYSTRUCUTRE */
     if ( !((body_part = get_body_part(sockfd, tag, message_num, folder_name))) ) 
     {
+        free_input(inputs);
         printf("Header is either not match the Type/ Subtype or encoding requirement.\n");
         exit(4);
     }
@@ -48,11 +55,11 @@ void mime(int sockfd, char *tag, char *input_message_num, char *folder_name)
     return;
 }
 
+/*
+    check for MIME-Version: 1.0 matching
+*/
 int match_mime_version(int sockfd, char *tag, int message_num, char *folder_name)
 {
-    /*
-        check for MIME-Version: 1.0 matching
-    */
     char buffer[BUFFER_SIZE];
     char *compare = NULL;
     char *output = NULL;

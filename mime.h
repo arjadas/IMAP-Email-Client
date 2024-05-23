@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <ctype.h>
 
-void mime(int sockfd, char *tag, char *message_num, char *folder_name);
+void mime(int sockfd, char *tag, inputs_t *inputs);
 int match_mime_version(int sockfd, char *tag, int message_num, char *folder_name);
 int match_content_type(int sockfd, char *tag, int message_num, char *folder_name);
 int get_body_part(int sockfd, char *tag, int message_num, char *folder_name);
